@@ -5,6 +5,6 @@
 ---
 
 ### NOTE!
-ini cuman sebuah project sederhana yang menggunakan firebase sebagai database untuk menyimpan data flashcard. Project ini dibuat menggunakan React
+ini cuman sebuah project sederhana yang menggunakan firebase sebagai database untuk menyimpan data dictionary. Project ini dibuat menggunakan *React*
 
 project ini cuman dibuat karena gabut :)
