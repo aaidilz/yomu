@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from "react";
-import FlashcardService from "../../services/FlashcardService";
+import DictionaryService from "../../services/DictionaryService";
 
 const Setting = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [flashcardCount, setFlashcardCount] = useState<number | null>(null);
+  const [dictionaryCount, setDictionaryCount] = useState<number | null>(null);
 
-  // Ambil jumlah flashcards saat komponen dimuat
+  // Ambil jumlah dictionaries saat komponen dimuat
   useEffect(() => {
-    const fetchFlashcardCount = async () => {
+    const fetchDictionaryCount = async () => {
       try {
-        const data = await FlashcardService.getUserFlashcards();
-        setFlashcardCount(data.length);
+        const data = await DictionaryService.getUserDictionaries();
+        setDictionaryCount(data.length);
       } catch (error) {
-        console.error("Error fetching flashcard count:", error);
+        console.error("Error fetching dictionary count:", error);
       }
     };
 
-    fetchFlashcardCount();
+    fetchDictionaryCount();
   }, []);
 
-  // ✅ Fungsi untuk mengekspor flashcard sebagai JSON (tanpa `id`)
-  const exportFlashcardJson = async () => {
+  // ✅ Fungsi untuk mengekspor dictionary sebagai JSON (tanpa `id`)
+  const exportDictionaryJson = async () => {
     try {
-      const data = await FlashcardService.getUserFlashcards();
+      const data = await DictionaryService.getUserDictionaries();
 
       // 🔹 Hapus properti "id" sebelum diekspor
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,12 +34,12 @@ const Setting = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "flashcards.json";
+      a.download = "dictionaries.json";
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error exporting flashcards:", error);
-      alert("Gagal mengekspor flashcards.");
+      console.error("Error exporting dictionaries:", error);
+      alert("Gagal mengekspor dictionaries.");
     }
   };
 
@@ -49,8 +49,8 @@ const Setting = () => {
     setSelectedFile(file || null);
   };
 
-  // ✅ Fungsi untuk mengimpor flashcard dari file JSON
-  const importFlashcardJson = async () => {
+  // ✅ Fungsi untuk mengimpor dictionary dari file JSON
+  const importDictionaryJson = async () => {
     if (!selectedFile) {
       alert("Silakan pilih file terlebih dahulu.");
       return;
@@ -68,42 +68,42 @@ const Setting = () => {
         }
 
         // 🔹 Filter hanya data yang memiliki setidaknya 1 karakter
-        const validFlashcards = jsonData.filter(
+        const validDictionaries = jsonData.filter(
           (item) =>
             (item.hiragana || item.kanji || item.katakana) &&
             item.romaji &&
             item.arti
         );
 
-        if (validFlashcards.length === 0) {
-          alert("Tidak ada flashcard yang valid dalam file ini.");
+        if (validDictionaries.length === 0) {
+          alert("Tidak ada dictionary yang valid dalam file ini.");
           return;
         }
 
         setUploading(true);
-        await FlashcardService.importFlashcards(validFlashcards);
+        await DictionaryService.importDictionaries(validDictionaries);
         setUploading(false);
 
-        alert("Flashcards berhasil diimpor!");
+        alert("Dictionaries berhasil diimpor!");
         setSelectedFile(null);
         window.location.reload();
       } catch (error) {
         console.error("Error parsing JSON:", error);
-        alert("Terjadi kesalahan saat mengimpor flashcards.");
+        alert("Terjadi kesalahan saat mengimpor dictionaries.");
       }
     };
 
     reader.readAsText(selectedFile);
   };
 
-  const deleteAllFlashcards = async () => {
+  const deleteAllDictionaries = async () => {
     try {
-      await FlashcardService.deleteAllFlashcards();
-      alert("Berhasil menghapus semua flashcards.");
+      await DictionaryService.deleteAllDictionaries();
+      alert("Berhasil menghapus semua dictionaries.");
       window.location.reload();
     } catch (error) {
-      console.error("Error deleting all flashcards:", error);
-      alert("Gagal menghapus semua flashcards.");
+      console.error("Error deleting all dictionaries:", error);
+      alert("Gagal menghapus semua dictionaries.");
     }
   };
 
@@ -115,14 +115,14 @@ const Setting = () => {
             Settings
           </h2>
 
-          {/* Flashcard Count */}
+          {/* Dictionary Count */}
           <div className="text-center mb-8">
             <p className="text-[#97C8EB] text-lg">
-              {flashcardCount !== null ? (
+              {dictionaryCount !== null ? (
                 <>
-                  Total Flashcards:
+                  Total Dictionaries:
                   <span className="text-[#64E9EE] font-bold ml-2">
-                    {flashcardCount}
+                    {dictionaryCount}
                   </span>
                 </>
               ) : (
@@ -174,7 +174,7 @@ const Setting = () => {
             {/* Action Buttons */}
             <div className="space-y-4">
               <button
-                onClick={importFlashcardJson}
+                onClick={importDictionaryJson}
                 disabled={uploading || !selectedFile}
                 className={`w-full py-3 px-6 rounded-xl font-mediu transition-all ${
                   uploading || !selectedFile
@@ -211,7 +211,7 @@ const Setting = () => {
               </button>
 
               <button
-                onClick={exportFlashcardJson}
+                onClick={exportDictionaryJson}
                 className="w-full py-3 px-6 rounded-xl font-medium text-[#64E9EE] border-2 border-[#64E9EE] hover:bg-[#64E9EE]/10 transition-all hover:shadow-lg"
               >
                 Export Data
@@ -220,10 +220,10 @@ const Setting = () => {
                 onClick={() => {
                   if (
                     window.confirm(
-                      "Apakah Anda yakin ingin menghapus semua flashcards?"
+                      "Apakah Anda yakin ingin menghapus semua dictionaries?"
                     )
                   ) {
-                    deleteAllFlashcards();
+                    deleteAllDictionaries();
                   }
                 }}
                 className="w-full py-3 px-6 rounded-xl font-medium bg-[#001011]/80 backdrop-blur-sm border border-[#64E9EE]/20

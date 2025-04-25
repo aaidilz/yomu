@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, ArrowForward, Shuffle } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import FlashcardService from "../../services/FlashcardService";
+import DictionaryService from "../../services/DictionaryService";
 
-const GameFlashcard = () => {
-  interface Flashcard {
+const GameDictionary = () => {
+  interface Dictionary {
     id: string;
     hiragana: string;
     kanji: string;
@@ -13,18 +13,18 @@ const GameFlashcard = () => {
     arti: string;
   }
 
-  const [cards, setCards] = useState<Flashcard[]>([]);
+  const [cards, setCards] = useState<Dictionary[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRandom, setIsRandom] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
-    const fetchFlashcards = async () => {
-      const userFlashcards = await FlashcardService.getUserFlashcards();
-      setCards(userFlashcards);
+    const fetchDictionaries = async () => {
+      const userDictionaries = await DictionaryService.getUserDictionaries();
+      setCards(userDictionaries);
     };
 
-    fetchFlashcards();
+    fetchDictionaries();
   }, []);
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const GameFlashcard = () => {
           </span>
         </div>
 
-        {/* Flashcard */}
+        {/* Dictionary */}
         <div
           className="relative w-full max-w-[400px] h-[300px] mx-auto perspective-1000"
           onClick={handleFlip}
@@ -179,4 +179,4 @@ const GameFlashcard = () => {
   );
 };
 
-export default GameFlashcard;
+export default GameDictionary;

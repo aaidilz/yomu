@@ -39,10 +39,10 @@ export default function Navbars() {
               </Link>
 
               <Link
-                to="/flashcard"
+                to="/dictionary"
                 className="px-3 py-2 rounded-md hover:bg-[#093A3E] hover:text-[#64E9EE]"
               >
-                Flashcard
+                Dictionary
               </Link>
 
               <Menu as="div" className="relative">
@@ -61,7 +61,7 @@ export default function Navbars() {
                     <MenuItem>
                       {({ active }) => (
                         <Link
-                          to="/games-flashcard"
+                          to="/games-dictionary"
                           className={`block px-4 py-2 ${
                             active ? "bg-[#001011] text-[#64E9EE]" : ""
                           }`}
@@ -190,13 +190,13 @@ export default function Navbars() {
               Note
             </Link>
             <Link
-              to="/flashcard"
+              to="/dictionary"
               className="block px-4 py-2 hover:bg-[#093A3E]"
             >
               Configure - FlashCard
             </Link>
             <Link
-              to="/games-flashcard"
+              to="/games-dictionary"
               className="block px-4 py-2 hover:bg-[#093A3E]"
             >
               Games - FlashCard

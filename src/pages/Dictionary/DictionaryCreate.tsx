@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../configs/firebase-config";
-import FlashcardService from "../../services/FlashcardService";
+import DictionaryService from "../../services/DictionaryService";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
@@ -15,7 +15,8 @@ const JAPANESE_REGEX = /^[\u4E00-\u9FAF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF]+
 const KATAKANA_REGEX = /^[\u30A0-\u30FF]+$/;
 const ROMANIZATION_REGEX = /^[a-zA-Z\s\-_!?]+$/;
 
-interface Flashcard {
+interface Dictionary {
+  id: string;
   hiragana: string;
   kanji: string;
   katakana: string;
@@ -24,8 +25,9 @@ interface Flashcard {
   kategori: string;
 }
 
-export default function FlashcardCreate() {
-  const [flashcard, setFlashcard] = useState<Flashcard>({
+export default function DictionaryCreate() {
+  const [dictionary, setDictionary] = useState<Dictionary>({
+    id: "",
     hiragana: "",
     kanji: "",
     katakana: "",
@@ -34,7 +36,7 @@ export default function FlashcardCreate() {
     kategori: "Umum",
   });
   const [errors, setErrors] = useState<
-    Partial<Record<keyof Flashcard, string>>
+    Partial<Record<keyof Dictionary, string>>
   >({});
   const [saving, setSaving] = useState(false);
   const [user] = useAuthState(auth);
@@ -61,7 +63,7 @@ export default function FlashcardCreate() {
       updatedFields["hiragana"] = wanakana.toHiragana(value); // auto fill hiragana
     }
   
-    setFlashcard((prev) => ({
+    setDictionary((prev) => ({
       ...prev,
       ...updatedFields,
     }));
@@ -69,46 +71,66 @@ export default function FlashcardCreate() {
   };
   
   
-  const validate = () => {
-    const newErrors: Partial<Record<keyof Flashcard, string>> = {};
-
+  const validate = async () => {
+    const newErrors: Partial<Record<keyof Dictionary, string>> = {};
+  
     // Required fields validation
-    const requiredFields: (keyof Flashcard)[] = ["kanji", "arti", "kategori"];
+    const requiredFields: (keyof Dictionary)[] = ["kanji", "arti", "kategori"];
     requiredFields.forEach((field) => {
-      if (!flashcard[field].trim()) {
+      if (!dictionary[field]?.trim()) {
         newErrors[field] = "Kolom ini wajib diisi";
       }
     });
-
+  
     // Format validation
-    if (flashcard.kanji && !JAPANESE_REGEX.test(flashcard.kanji)) {
+    if (dictionary.kanji && !JAPANESE_REGEX.test(dictionary.kanji)) {
       newErrors.kanji = "Hanya boleh menggunakan karakter Jepang";
     }
-
-    if (flashcard.katakana && !KATAKANA_REGEX.test(flashcard.katakana)) {
+  
+    if (dictionary.katakana && !KATAKANA_REGEX.test(dictionary.katakana)) {
       newErrors.katakana = "Hanya boleh menggunakan karakter Katakana Jepang";
     }
-
-    if (flashcard.arti && !ROMANIZATION_REGEX.test(flashcard.arti)) {
+  
+    if (dictionary.arti && !ROMANIZATION_REGEX.test(dictionary.arti)) {
       newErrors.arti = "Hanya boleh menggunakan huruf latin";
     }
-
+  
+    if (dictionary.kanji) {
+      try {
+        const userDictionaries = await DictionaryService.getUserDictionaries();
+        const isDuplicate = userDictionaries.some(
+          (entry: Dictionary) =>
+            entry.kanji === dictionary.kanji &&
+            entry.id !== dictionary.id // agar tidak menganggap dirinya sendiri sebagai duplikat saat update
+        );
+  
+        if (isDuplicate) {
+          newErrors.kanji = "Kanji ini sudah ada dalam kamus Anda";
+        }
+      } catch (err) {
+        console.error("Gagal memeriksa duplikat kanji:", err);
+      }
+    }
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleSubmit = async () => {
-    if (!validate()) return;
+    const isValid = await validate();
+    if (!isValid) return;
+  
     setSaving(true);
     try {
       if (!user) return;
-      await FlashcardService.addFlashcard(flashcard);
-      navigate("/flashcard");
+      await DictionaryService.addDictionary(dictionary);
+      navigate("/dictionary");
     } catch (error) {
-      console.error("Error saving flashcard:", error);
+      console.error("Error saving dictionary:", error);
     }
     setSaving(false);
   };
+  
 
   const textFieldStyles = {
     "& .MuiOutlinedInput-root": {
@@ -126,12 +148,12 @@ export default function FlashcardCreate() {
       <div className="w-full max-w-2xl bg-gray-800 rounded-xl p-6 md:p-8 border border-[#64E9EE]/20 shadow-2xl">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
-            Buat Flashcard Baru
+            Buat Dictionary Baru
           </h1>
           <Button
             variant="outlined"
             startIcon={<ArrowBackIcon />}
-            onClick={() => navigate("/flashcard")}
+            onClick={() => navigate("/dictionary")}
             sx={{
               color: "#64E9EE",
               borderColor: "#64E9EE",
@@ -163,7 +185,7 @@ export default function FlashcardCreate() {
               <TextField
                 label="Kanji"
                 name="kanji"
-                value={flashcard.kanji}
+                value={dictionary.kanji}
                 onChange={handleChange}
                 error={!!errors.kanji}
                 helperText={errors.kanji}
@@ -174,7 +196,7 @@ export default function FlashcardCreate() {
               <TextField
                 label="Hiragana"
                 name="hiragana"
-                value={flashcard.hiragana}
+                value={dictionary.hiragana}
                 onChange={handleChange}
                 variant="outlined"
                 sx={textFieldStyles}
@@ -182,7 +204,7 @@ export default function FlashcardCreate() {
               <TextField
                 label="Katakana"
                 name="katakana"
-                value={flashcard.katakana}
+                value={dictionary.katakana}
                 onChange={handleChange}
                 error={!!errors.katakana}
                 helperText={errors.katakana}
@@ -209,7 +231,7 @@ export default function FlashcardCreate() {
               <TextField
                 label="Arti (Indonesia)"
                 name="arti"
-                value={flashcard.arti}
+                value={dictionary.arti}
                 onChange={handleChange}
                 error={!!errors.arti}
                 helperText={errors.arti}
@@ -220,7 +242,7 @@ export default function FlashcardCreate() {
               <TextField
                 label="Kategori"
                 name="kategori"
-                value={flashcard.kategori}
+                value={dictionary.kategori}
                 onChange={handleChange}
                 error={!!errors.kategori}
                 helperText={errors.kategori}
@@ -247,7 +269,7 @@ export default function FlashcardCreate() {
           <TextField
             label="Romaji"
             name="romaji"
-            value={flashcard.romaji}
+            value={dictionary.romaji}
             onChange={handleChange}
             variant="outlined"
             fullWidth
@@ -276,7 +298,7 @@ export default function FlashcardCreate() {
           }}
         >
           <span className="font-bold text-lg">
-            {saving ? "Menyimpan..." : "Simpan Flashcard"}
+            {saving ? "Menyimpan..." : "Simpan Dictionary"}
           </span>
         </Button>
       </div>

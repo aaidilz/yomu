@@ -10,7 +10,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
-interface Flashcard {
+interface Dictionary {
   id: string;
   hiragana: string;
   kanji: string;
@@ -20,81 +20,81 @@ interface Flashcard {
   kategori: string;
 }
 
-class FlashcardService {
-  private getUserFlashcardsRef() {
+class DictionaryService {
+  private getUserDictionariesRef() {
     const user = auth.currentUser;
     if (!user) {
       throw new Error("User not authenticated");
       return null;
     }
 
-    return collection(db, "users", user.uid, "flashcards");
+    return collection(db, "users", user.uid, "dictionaries");
   }
 
-  async addFlashcard(flashcardData: Omit<Flashcard, "id">) {
-    const ref = this.getUserFlashcardsRef();
+  async addDictionary(dictionaryData: Omit<Dictionary, "id">) {
+    const ref = this.getUserDictionariesRef();
     if (!ref) throw new Error("User not authenticated");
 
     return addDoc(ref, {
-      ...flashcardData,
+      ...dictionaryData,
       createdAt: Timestamp.now(),
     });
   }
 
-  async getUserFlashcards(): Promise<Flashcard[]> {
-    const ref = this.getUserFlashcardsRef();
+  async getUserDictionaries(): Promise<Dictionary[]> {
+    const ref = this.getUserDictionariesRef();
     if (!ref) return [];
 
     const snapshot = await getDocs(ref);
     return snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...(doc.data() as Omit<Flashcard, "id">),
+      ...(doc.data() as Omit<Dictionary, "id">),
     }));
   }
 
-  async updateFlashcard(
+  async updateDictionary(
     id: string,
-    updatedData: Partial<Omit<Flashcard, "id">>
+    updatedData: Partial<Omit<Dictionary, "id">>
   ) {
-    const ref = this.getUserFlashcardsRef();
+    const ref = this.getUserDictionariesRef();
     if (!ref) throw new Error("User not authenticated");
 
-    const flashcardRef = doc(ref, id);
-    return updateDoc(flashcardRef, {
+    const dictionaryRef = doc(ref, id);
+    return updateDoc(dictionaryRef, {
       ...updatedData,
       updatedAt: Timestamp.now(),
     });
   }
 
-  async deleteFlashcard(id: string) {
-    const ref = this.getUserFlashcardsRef();
+  async deleteDictionary(id: string) {
+    const ref = this.getUserDictionariesRef();
     if (!ref) throw new Error("User not authenticated");
 
-    const flashcardRef = doc(ref, id);
-    return deleteDoc(flashcardRef);
+    const dictionaryRef = doc(ref, id);
+    return deleteDoc(dictionaryRef);
   }
 
-  async importFlashcards(flashcards: Flashcard[]) {
-    const ref = this.getUserFlashcardsRef();
+  async importDictionaries(dictionaries: Dictionary[]) {
+    const ref = this.getUserDictionariesRef();
     if (!ref) throw new Error("User not authenticated");
 
-    // Ambil semua flashcards yang ada
+    // Ambil semua dictionaries yang ada
     const snapshot = await getDocs(ref);
-    const existingFlashcards = snapshot.docs.map((doc) => doc.data());
+    const existingDictionaries = snapshot.docs.map((doc) => doc.data());
     const batch = writeBatch(db);
 
-    for (const flashcard of flashcards) {
-      // Cek apakah flashcard sudah ada berdasarkan hiragana atau kanji
-      const isExist = existingFlashcards.some(
+    for (const dictionary of dictionaries) {
+      // Cek apakah dictionary sudah ada berdasarkan hiragana atau kanji
+      const isExist = existingDictionaries.some(
         (existing) =>
-          existing.hiragana === flashcard.hiragana ||
-          existing.kanji === flashcard.kanji
+          existing.hiragana === dictionary.hiragana ||
+          existing.kanji === dictionary.kanji
       );
 
       if (!isExist) {
         const newDocRef = doc(ref); // Buat dokumen baru
         batch.set(newDocRef, {
-          ...flashcard,
+          ...dictionary,
           createdAt: Timestamp.now(),
         });
       }
@@ -103,8 +103,8 @@ class FlashcardService {
     await batch.commit(); // Simpan semua perubahan sekaligus
   }
 
-  async deleteAllFlashcards() {
-    const ref = this.getUserFlashcardsRef();
+  async deleteAllDictionaries() {
+    const ref = this.getUserDictionariesRef();
     if (!ref) throw new Error("User not authenticated");
 
     const snapshot = await getDocs(ref);
@@ -118,4 +118,4 @@ class FlashcardService {
   }
 }
 
-export default new FlashcardService();
+export default new DictionaryService();

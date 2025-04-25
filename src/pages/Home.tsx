@@ -2,7 +2,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../configs/firebase-config";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import FlashcardService from "../services/FlashcardService";
+import DictionaryService from "../services/DictionaryService";
 import NoteService from "../services/NoteService";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchFlashcardCount = async () => {
-      const flashcards = await FlashcardService.getUserFlashcards();
+      const flashcards = await DictionaryService.getUserDictionaries();
       setFlashcardCount(flashcards.length);
     };
 

@@ -3,17 +3,17 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Changelog from "./pages/ChangeLog";
 import NotFound from "./pages/NotFound";
-import FlashcardCreate from "./pages/Flashcard/FlashcardCreate";
-import FlashcardEdit from "./pages/Flashcard/FlashcardEdit";
+import DictionaryCreate from "./pages/Dictionary/DictionaryCreate";
+import DictionaryEdit from "./pages/Dictionary/DictionaryEdit";
 
 // Lazy-loaded components
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
-const Flashcard = lazy(() => import("./pages/Flashcard/Flashcard"));
-const GamesFlashcard = lazy(() => import("./pages/Flashcard/GameFlashcard"));
-const Setting = lazy(() => import("./pages/Flashcard/Setting"));
+const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
+const GamesFlashcard = lazy(() => import("./pages/Games/GameFlashcard"));
+const Setting = lazy(() => import("./pages/Dictionary/Setting"));
 const NoteList = lazy(() => import("./pages/Note/NoteList"));
 const NoteEditor = lazy(() => import("./pages/Note/NoteEditor"));
 const NotePreview = lazy(() => import("./pages/Note/NotePreview"));
@@ -40,37 +40,37 @@ const App = () => {
           }
         />
         <Route
-          path="/flashcard"
+          path="/dictionary"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
-                <Flashcard />
+                <Dictionary />
               </ProtectedRoute>
             </div>
           }
         />
         <Route
-          path="/flashcard/new"
+          path="/dictionary/new"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
-                <FlashcardCreate />
+                <DictionaryCreate />
               </ProtectedRoute>
             </div>
           }
         />
         <Route
-          path="/flashcard/edit/:id"
+          path="/dictionary/edit/:id"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
-                <FlashcardEdit />
+                <DictionaryEdit />
               </ProtectedRoute>
             </div>
           }
         />
         <Route
-          path="/flashcard/setting"
+          path="/dictionary/setting"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
@@ -80,7 +80,7 @@ const App = () => {
           }
         />
         <Route
-          path="/games-flashcard"
+          path="/games-dictionary"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
