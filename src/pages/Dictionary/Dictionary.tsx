@@ -194,7 +194,7 @@ const Dictionary: React.FC = () => {
         </motion.div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">No dictionaries found.</p>
+          <p className="text-gray-500 text-lg">Data tidak ada ditemukan :(</p>
         </div>
       ) : (
         <>

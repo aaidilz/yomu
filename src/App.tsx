@@ -3,17 +3,23 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Changelog from "./pages/ChangeLog";
 import NotFound from "./pages/NotFound";
-import DictionaryCreate from "./pages/Dictionary/DictionaryCreate";
-import DictionaryEdit from "./pages/Dictionary/DictionaryEdit";
 
 // Lazy-loaded components
 const HomePage = lazy(() => import("./pages/HomePage"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
+// dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
-const GamesFlashcard = lazy(() => import("./pages/Games/GameFlashcard"));
+const DictionaryCreate = lazy(() => import("./pages/Dictionary/DictionaryCreate"));
+const DictionaryEdit = lazy(() => import("./pages/Dictionary/DictionaryEdit"));
 const Setting = lazy(() => import("./pages/Dictionary/Setting"));
+// games
+const GamesFlashcard = lazy(() => import("./pages/Games/Flashcard/GameFlashcard"));
+
+const GamesQuiz = lazy(() => import("./pages/Games/Quiz/GameQuiz"));
+
+// note
 const NoteList = lazy(() => import("./pages/Note/NoteList"));
 const NoteEditor = lazy(() => import("./pages/Note/NoteEditor"));
 const NotePreview = lazy(() => import("./pages/Note/NotePreview"));
@@ -80,11 +86,21 @@ const App = () => {
           }
         />
         <Route
-          path="/games-dictionary"
+          path="/games-flashcard"
           element={
             <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
               <ProtectedRoute>
                 <GamesFlashcard />
+              </ProtectedRoute>
+            </div>
+          }
+        />
+        <Route
+          path="/games-quiz"
+          element={
+            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+              <ProtectedRoute>
+                <GamesQuiz />
               </ProtectedRoute>
             </div>
           }

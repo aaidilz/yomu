@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, ArrowForward, Shuffle } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import DictionaryService from "../../services/DictionaryService";
+import DictionaryService from "../../../services/DictionaryService";
 
-const GameDictionary = () => {
+const GameFlashcard = () => {
   interface Dictionary {
     id: string;
     hiragana: string;
@@ -82,7 +82,7 @@ const GameDictionary = () => {
           transition={{ delay: 0.5 }}
           className="text-[#97C8EB] text-lg"
         >
-          Masih kosong ¯\_(ツ)_/¯
+          <div className="text-xl text-gray-500 mt-4">gak ada datanya :(</div>
         </motion.div>
       </div>
     );
@@ -179,4 +179,4 @@ const GameDictionary = () => {
   );
 };
 
-export default GameDictionary;
+export default GameFlashcard;

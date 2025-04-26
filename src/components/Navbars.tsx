@@ -61,12 +61,24 @@ export default function Navbars() {
                     <MenuItem>
                       {({ active }) => (
                         <Link
-                          to="/games-dictionary"
+                          to="/games-flashcard"
                           className={`block px-4 py-2 ${
                             active ? "bg-[#001011] text-[#64E9EE]" : ""
                           }`}
                         >
                           FlashCard Flip
+                        </Link>
+                      )}
+                    </MenuItem>
+                    <MenuItem>
+                      {({ active }) => (
+                        <Link
+                          to="/games-quiz"
+                          className={`block px-4 py-2 ${
+                            active ? "bg-[#001011] text-[#64E9EE]" : ""
+                          }`}
+                        >
+                          Quiz
                         </Link>
                       )}
                     </MenuItem>
@@ -193,14 +205,25 @@ export default function Navbars() {
               to="/dictionary"
               className="block px-4 py-2 hover:bg-[#093A3E]"
             >
-              Configure - FlashCard
+              Dictionary
             </Link>
-            <Link
-              to="/games-dictionary"
-              className="block px-4 py-2 hover:bg-[#093A3E]"
-            >
-              Games - FlashCard
-            </Link>
+            <div className="space-y-1">
+              <span className="block px-4 py-2 font-semibold text-[#64E9EE]">
+                Games
+              </span>
+              <Link
+                to="/games-flashcard"
+                className="block px-4 py-2 hover:bg-[#093A3E]"
+              >
+                FlashCard
+              </Link>
+              <Link
+                to="/games-quiz"
+                className="block px-4 py-2 hover:bg-[#093A3E]"
+              >
+                Quiz
+              </Link>
+            </div>
           </div>
         )}
       </div>
