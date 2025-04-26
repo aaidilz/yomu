@@ -16,7 +16,7 @@ const KATAKANA_REGEX = /^[\u30A0-\u30FF]+$/;
 const ROMANIZATION_REGEX = /^[a-zA-Z\s\-_!?]+$/;
 
 interface Dictionary {
-  id: string;
+  id?: string;
   hiragana: string;
   kanji: string;
   katakana: string;
@@ -27,7 +27,6 @@ interface Dictionary {
 
 export default function DictionaryCreate() {
   const [dictionary, setDictionary] = useState<Dictionary>({
-    id: "",
     hiragana: "",
     kanji: "",
     katakana: "",
