@@ -32,16 +32,25 @@ export default function HomePage() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full bg-transparent p-4 flex justify-between items-center z-10">
-        <a href="#home" className="text-lg font-bold text-white">
-          TPoser
-        </a>
-        <Button
-          href="/login"
-          startIcon={<AccountCircle className="text-white" />}
-        >
-          Login
-        </Button>
+      <nav className="fixed top-0 left-0 w-full backdrop-blur-sm z-50 px-4 md:px-8 py-3">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <a href="/" className="flex items-center space-x-2 group">
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#13AAFB] to-blue-400 bg-clip-text text-transparent">
+              TPoser
+            </span>
+          </a>
+
+          <div className="flex items-center space-x-4">
+            <Button
+              href="/login"
+              variant="outlined"
+              className="!normal-case !text-white !border-gray-400 hover:!border-[#13AAFB] hover:!bg-[#13AAFB]/10 !transition-all !duration-300 !rounded-lg !px-4 !py-2"
+              startIcon={<AccountCircle className="!text-white" />}
+            >
+              <span className="text-sm font-medium">Login</span>
+            </Button>
+          </div>
+        </div>
       </nav>
 
       {/* Main Content */}
