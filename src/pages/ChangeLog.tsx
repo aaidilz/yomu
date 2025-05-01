@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
-import { AccountCircle } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import Footers from "../components/HomeFooter";
+import HomeNavbar from "../components/HomeNavbar";
 
 const ChangeLog = () => {
   const cardData = {
@@ -14,31 +14,11 @@ const ChangeLog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A202C]">
+    <div className="min-h-screen flex flex-col bg-[#1A202C]">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full backdrop-blur-sm z-50 px-4 md:px-8 py-3">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <a href="/" className="flex items-center space-x-2 group">
-            <span className="text-2xl font-bold bg-gradient-to-r from-[#13AAFB] to-blue-400 bg-clip-text text-transparent">
-              TPoser
-            </span>
-          </a>
-
-          <div className="flex items-center space-x-4">
-            <Button
-              href="/login"
-              variant="outlined"
-              className="!normal-case !text-white !border-gray-400 hover:!border-[#13AAFB] hover:!bg-[#13AAFB]/10 !transition-all !duration-300 !rounded-lg !px-4 !py-2"
-              startIcon={<AccountCircle className="!text-white" />}
-            >
-              <span className="text-sm font-medium">Login</span>
-            </Button>
-          </div>
-        </div>
-      </nav>
-
+      <HomeNavbar />
       {/* Content Card */}
-      <div className="pt-24 pb-12 px-6 md:px-10">
+      <div className="pt-24 pb-12 px-6 md:px-10 flex-grow">
         <div className="mx-auto max-w-4xl">
           <h1 className="mb-8 text-3xl font-bold text-[#13AAFB] md:text-4xl">
             {cardData.header}
@@ -65,6 +45,9 @@ const ChangeLog = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footers />
     </div>
   );
 };
