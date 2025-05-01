@@ -37,7 +37,18 @@ export default function HomePage() {
       <HomeNavbar />
 
       {/* Main Content */}
-      <div className="min-h-screen flex flex-col bg-gradient-to-r from-[#001011] to-[#334155]">
+      <div
+        className="min-h-screen flex flex-col bg-gradient-to-r from-[#001011] to-[#334155]"
+        style={{
+          backgroundImage:
+            "url('/bg1.jpg'), linear-gradient(to right, #001011, #334155)",
+          backgroundBlendMode: "overlay",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Header */}
         {/* Konten Utama */}
         <div className="flex-grow flex items-center py-16">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
