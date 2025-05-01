@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { ReactNode } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../configs/firebase-config";
-import Navbars from "./Navbars";
+import Navbars from "./Navbar";
 import LoopIcon from "@mui/icons-material/Loop";
 import { motion } from "framer-motion";
 

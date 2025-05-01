@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import FlashcardService from "../../services/FlashcardService";
+import DictionaryService from "../../services/DictionaryService";
 import { auth } from "../../configs/firebase-config";
 import AddIcon from "@mui/icons-material/Add";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -9,9 +9,9 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
 
-import FlashcardItem from "./components/FlashcardItem";
+import DictionaryItem from "./components/DictionaryItem";
 
-interface Flashcard {
+interface Dictionary {
   id: string;
   hiragana: string;
   kanji: string;
@@ -23,8 +23,8 @@ interface Flashcard {
 
 const ITEMS_PER_PAGE = 6;
 
-const Flashcard: React.FC = () => {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+const Dictionary: React.FC = () => {
+  const [dictionaries, setDictionaries] = useState<Dictionary[]>([]);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,27 +35,27 @@ const Flashcard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchFlashcards = async () => {
+    const fetchDictionaries = async () => {
       if (!user) return;
       try {
         setIsLoading(true);
-        const data = await FlashcardService.getUserFlashcards();
-        const uniqueFlashcards = Array.from(
+        const data = await DictionaryService.getUserDictionaries();
+        const uniqueDictionaries = Array.from(
           new Map(data.map((item) => [item.id, item])).values()
         );
-        setFlashcards(uniqueFlashcards);
+        setDictionaries(uniqueDictionaries);
       } catch (err) {
-        console.error("Failed to fetch flashcards", err);
+        console.error("Failed to fetch dictionaries", err);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchFlashcards();
+    fetchDictionaries();
   }, [user]);
 
   const handleEdit = useCallback(
     (id: string) => {
-      navigate(`/flashcard/edit/${id}`);
+      navigate(`/dictionary/edit/${id}`);
     },
     [navigate]
   );
@@ -63,10 +63,10 @@ const Flashcard: React.FC = () => {
   const handleDelete = useCallback(async (id: string) => {
     setDeletingId(id);
     try {
-      await FlashcardService.deleteFlashcard(id);
-      setFlashcards((prev) => prev.filter((f) => f.id !== id));
+      await DictionaryService.deleteDictionary(id);
+      setDictionaries((prev) => prev.filter((f) => f.id !== id));
     } catch (error) {
-      console.error("Failed to delete flashcard", error);
+      console.error("Failed to delete dictionary", error);
     } finally {
       setDeletingId(null);
       setConfirmDeleteId(null);
@@ -74,13 +74,13 @@ const Flashcard: React.FC = () => {
   }, []);
 
   const categories = useMemo(() => {
-    const unique = new Set(flashcards.map((f) => f.kategori));
+    const unique = new Set(dictionaries.map((f) => f.kategori));
     return ["Semua", ...Array.from(unique)];
-  }, [flashcards]);
+  }, [dictionaries]);
 
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    return flashcards.filter((f) => {
+    return dictionaries.filter((f) => {
       const matchesQuery =
         f.kanji.includes(q) ||
         f.hiragana.includes(q) ||
@@ -92,7 +92,7 @@ const Flashcard: React.FC = () => {
         selectedCategory === "Semua" || f.kategori === selectedCategory;
       return matchesQuery && matchesCategory;
     });
-  }, [searchQuery, flashcards, selectedCategory]);
+  }, [searchQuery, dictionaries, selectedCategory]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = useMemo(
@@ -117,18 +117,18 @@ const Flashcard: React.FC = () => {
       <div className="w-full max-w-6xl mb-8">
         <div className="flex justify-between items-center w-full mb-8">
           <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
-            Flashcard
+            Dictionary
           </h1>
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => navigate("/flashcard/new")}
+              onClick={() => navigate("/dictionary/new")}
               className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-white px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
             >
               <AddIcon className="mr-2 transform translate-y-[-1px]" />
               Tambah
             </button>
             <button
-              onClick={() => navigate("/flashcard/setting")}
+              onClick={() => navigate("/dictionary/setting")}
               className="p-2 rounded-xl hover:bg-[#64E9EE]/20 text-[#64E9EE] transition-all transform hover:scale-110"
             >
               <SettingsIcon fontSize="medium" />
@@ -143,7 +143,7 @@ const Flashcard: React.FC = () => {
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="Search flashcards..."
+                placeholder="Search dictionaries..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -194,15 +194,15 @@ const Flashcard: React.FC = () => {
         </motion.div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">No flashcards found.</p>
+          <p className="text-gray-500 text-lg">Data tidak ada ditemukan :(</p>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {paginated.map((fc) => (
-              <FlashcardItem
+              <DictionaryItem
                 key={fc.id}
-                flashcard={fc}
+                dictionary={fc}
                 onEdit={handleEdit}
                 onDelete={() => setConfirmDeleteId(fc.id)}
               />
@@ -252,7 +252,7 @@ const Flashcard: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
             <p className="text-lg font-semibold mb-4">
-              Yakin ingin menghapus flashcard ini?
+              Yakin ingin menghapus dictionary ini?
             </p>
             <div className="flex justify-center gap-4">
               <button
@@ -276,4 +276,4 @@ const Flashcard: React.FC = () => {
   );
 };
 
-export default Flashcard;
+export default Dictionary;

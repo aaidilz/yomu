@@ -39,10 +39,10 @@ export default function Navbars() {
               </Link>
 
               <Link
-                to="/flashcard"
+                to="/dictionary"
                 className="px-3 py-2 rounded-md hover:bg-[#093A3E] hover:text-[#64E9EE]"
               >
-                Flashcard
+                Dictionary
               </Link>
 
               <Menu as="div" className="relative">
@@ -67,6 +67,18 @@ export default function Navbars() {
                           }`}
                         >
                           FlashCard Flip
+                        </Link>
+                      )}
+                    </MenuItem>
+                    <MenuItem>
+                      {({ active }) => (
+                        <Link
+                          to="/games-quiz"
+                          className={`block px-4 py-2 ${
+                            active ? "bg-[#001011] text-[#64E9EE]" : ""
+                          }`}
+                        >
+                          Quiz
                         </Link>
                       )}
                     </MenuItem>
@@ -190,17 +202,28 @@ export default function Navbars() {
               Note
             </Link>
             <Link
-              to="/flashcard"
+              to="/dictionary"
               className="block px-4 py-2 hover:bg-[#093A3E]"
             >
-              Configure - FlashCard
+              Dictionary
             </Link>
-            <Link
-              to="/games-flashcard"
-              className="block px-4 py-2 hover:bg-[#093A3E]"
-            >
-              Games - FlashCard
-            </Link>
+            <div className="space-y-1">
+              <span className="block px-4 py-2 font-semibold text-[#64E9EE]">
+                Games
+              </span>
+              <Link
+                to="/games-flashcard"
+                className="block px-4 py-2 hover:bg-[#093A3E]"
+              >
+                FlashCard
+              </Link>
+              <Link
+                to="/games-quiz"
+                className="block px-4 py-2 hover:bg-[#093A3E]"
+              >
+                Quiz
+              </Link>
+            </div>
           </div>
         )}
       </div>
