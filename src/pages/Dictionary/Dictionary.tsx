@@ -8,6 +8,14 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
 import DictionaryItem from "./components/DictionaryItem";
 
@@ -104,10 +112,10 @@ const Dictionary: React.FC = () => {
     [filtered, currentPage]
   );
 
-  const handlePageChange = useCallback((page: number) => {
-    setCurrentPage(page);
+  const handleChange = (_: unknown, value: number) => {
+    setCurrentPage(value);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  };
 
   if (loading) return <p className="text-center py-4">Loading...</p>;
 
@@ -178,100 +186,92 @@ const Dictionary: React.FC = () => {
 
       {/* Content Area */}
       <div className="w-full max-w-6xl">
-      {isLoading ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-48 bg-gray-200 rounded-xl animate-pulse"
-            ></div>
-          ))}
-        </motion.div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">Data tidak ada ditemukan :(</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {paginated.map((fc) => (
-              <DictionaryItem
-                key={fc.id}
-                dictionary={fc}
-                onEdit={handleEdit}
-                onDelete={() => setConfirmDeleteId(fc.id)}
-              />
+        {isLoading ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-48 bg-gray-200 rounded-xl animate-pulse"
+              ></div>
             ))}
+          </motion.div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-gray-500 text-lg">Data tidak ada ditemukan :(</p>
           </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center items-center space-x-3 my-12">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 border-2 border-[#64E9EE] rounded-xl text-[#64E9EE] disabled:opacity-50 hover:bg-[#64E9EE]/10 transition-colors"
-            >
-              Prev
-            </button>
-
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-4 py-2 min-w-[44px] border-2 border-[#64E9EE] rounded-xl transition-all ${
-                    page === currentPage
-                      ? "bg-[#64E9EE] text-white shadow-inner"
-                      : "text-[#64E9EE] hover:bg-[#64E9EE]/10"
-                  }`}
-                >
-                  {page}
-                </button>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginated.map((fc) => (
+                <DictionaryItem
+                  key={fc.id}
+                  dictionary={fc}
+                  onEdit={handleEdit}
+                  onDelete={() => setConfirmDeleteId(fc.id)}
+                />
               ))}
             </div>
 
+            {/* Pagination */}
+            <div className="flex justify-center items-center my-12">
+              <Stack spacing={2}>
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handleChange}
+                  shape="rounded"
+                  color="primary"
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#64E9EE",
+                      borderColor: "#64E9EE",
+                    },
+                  }}
+                />
+              </Stack>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        className="fixed inset-0 z-50 flex items-center justify-center"
+      >
+        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+        <DialogPanel className="relative bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
+          <DialogTitle className="text-lg font-semibold mb-4">
+            Yakin ingin menghapus catatan ini?
+          </DialogTitle>
+          <Description className="mb-4 text-gray-600">
+            Catatan yang dihapus tidak dapat dikembalikan.
+          </Description>
+          <div className="flex justify-center gap-4">
             <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 border-2 border-[#64E9EE] rounded-xl text-[#64E9EE] disabled:opacity-50 hover:bg-[#64E9EE]/10 transition-colors"
+              onClick={() => confirmDeleteId && handleDelete(confirmDeleteId)}
+              disabled={deletingId === confirmDeleteId}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
             >
-              Next
+              {deletingId === confirmDeleteId ? "Menghapus..." : "Hapus"}
+            </button>
+            <button
+              onClick={() => setConfirmDeleteId(null)}
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+            >
+              Batal
             </button>
           </div>
-        </>
-      )}
-    </div>
-      
-      {/* Delete Confirmation Modal */}
-      {confirmDeleteId && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
-            <p className="text-lg font-semibold mb-4">
-              Yakin ingin menghapus dictionary ini?
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => handleDelete(confirmDeleteId)}
-                disabled={deletingId === confirmDeleteId}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
-              >
-                {deletingId === confirmDeleteId ? "Menghapus..." : "Hapus"}
-              </button>
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-              >
-                Batal
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        </DialogPanel>
+      </Dialog>
     </div>
   );
 };

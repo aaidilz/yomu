@@ -23,11 +23,11 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
   ({ note, onPreview, onEdit, onDeleteConfirm, loadingEditId }) => {
     return (
       <motion.div
-        layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-gray-800 rounded-xl p-4 border border-[#64E9EE]/20 shadow-lg hover:shadow-2xl transition-shadow"
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        whileHover={{ scale: 1.02 }}
+        className="bg-gray-800 rounded-xl p-4 md:p-6 border border-[#64E9EE]/20 shadow-lg hover:shadow-2xl transition-shadow h-full flex flex-col"
       >
         <div className="flex flex-col h-full justify-between">
           <div>
