@@ -25,6 +25,7 @@ const NoteList: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [loadingEditId, setLoadingEditId] = useState<string | null>(null);
+  const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -62,8 +63,8 @@ const NoteList: React.FC = () => {
     }
   };
 
-  const preview = (id: string) => {
-    setLoadingEditId(id);
+  const handlePreview = (id: string) => {
+    setLoadingPreviewId(id);
     setTimeout(() => {
       navigate(`/note/${id}`);
     }, 400);
@@ -151,11 +152,11 @@ const NoteList: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {paginatedNotes.map((note) => (
                   <NoteItem
-                    key={note.id}
                     note={note}
-                    onPreview={preview}
+                    onPreview={handlePreview}
                     onEdit={handleEdit}
                     onDeleteConfirm={setConfirmDeleteId}
+                    loadingPreviewId={loadingPreviewId}
                     loadingEditId={loadingEditId}
                   />
                 ))}
