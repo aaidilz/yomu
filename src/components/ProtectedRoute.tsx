@@ -25,8 +25,12 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
       setLoading(false);
     };
 
-    if (user && !authLoading) {
-      loadData();
+    if (!authLoading) {
+      if (user) {
+        loadData();
+      } else {
+        setLoading(false);
+      }
     }
   }, [user, authLoading, load]);
 
