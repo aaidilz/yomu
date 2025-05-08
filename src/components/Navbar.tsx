@@ -6,11 +6,13 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
 import { auth } from "../configs/firebase-config";
 import AuthService from "../services/AuthService";
+import { Logout, Settings } from "@mui/icons-material";
 
 export default function Navbars() {
   const [user] = useAuthState(auth);
@@ -47,7 +49,7 @@ export default function Navbars() {
 
               <Menu as="div" className="relative">
                 <MenuButton className="px-3 py-2 rounded-md hover:bg-[#093A3E] hover:text-[#64E9EE]">
-                  Games <ArrowDropDownIcon />
+                  Games <ExpandMoreIcon />
                 </MenuButton>
                 <Transition
                   enter="transition duration-100 ease-out"
@@ -120,25 +122,7 @@ export default function Navbars() {
                           active ? "bg-[#001011] text-[#64E9EE]" : ""
                         }`}
                       >
-                        <svg
-                          className="w-5 h-5 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
+                        <Settings className="w-5 h-5 mr-2" />
                         Settings
                       </Link>
                     )}
@@ -152,19 +136,7 @@ export default function Navbars() {
                           active ? "bg-[#001011] text-[#64E9EE]" : ""
                         }`}
                       >
-                        <svg
-                          className="w-5 h-5 mr-2 inline-block"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
+                        <Logout className="w-5 h-5 mr-2" />
                         Logout
                       </button>
                     )}
@@ -179,19 +151,7 @@ export default function Navbars() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 hover:bg-[#093A3E] rounded-lg"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+            <MenuIcon className="w-6 h-6" />
           </button>
         </div>
 
