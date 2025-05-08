@@ -250,10 +250,10 @@ const Dictionary: React.FC = () => {
         <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
         <DialogPanel className="relative bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
           <DialogTitle className="text-lg font-semibold mb-4">
-            Yakin ingin menghapus catatan ini?
+            Yakin ingin menghapus entri kamus ini?
           </DialogTitle>
           <Description className="mb-4 text-gray-600">
-            Catatan yang dihapus tidak dapat dikembalikan.
+            Entri kamus yang dihapus tidak dapat dikembalikan.
           </Description>
           <div className="flex justify-center gap-4">
             <button
