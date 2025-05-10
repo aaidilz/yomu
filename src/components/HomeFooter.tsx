@@ -32,14 +32,19 @@ export default function HomeFooter() {
         </div>
 
         {/* About */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4">About</h2>
-          <p className="text-sm leading-relaxed text-gray-400">
-            Website ini dibuat sebagai sarana belajar bahasa Jepang secara
-            mandiri. Proyek ini lahir
-            dari waktu luang developer yang gabut :) Namun begitu, setiap saran
-            atau masukan sangat dihargai demi pengembangan ke depannya.
-          </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <a
+            href="#"
+            className="text-sm text-gray-400 hover:text-[#13AAFB]"
+          >
+            About Me
+          </a>
+          <a
+            href="/feedback"
+            className="text-sm text-gray-400 hover:text-[#13AAFB]"
+          >
+            Feedback
+          </a>
         </div>
 
         {/* Copyright */}
