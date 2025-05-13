@@ -5,9 +5,15 @@ import HomeNavbar from "../components/HomeNavbar";
 const ChangeLog = () => {
   const changelogs = [
     {
+      version: "1.0.1",
+      date: "10 Mei 2025",
+      tag: "Current",
+      description: "- Feature: **Implementasi feedback** untuk data collecting \n- Adjust: **Tampilan** agar lebih responsif dan user-friendly."
+    },
+    {
       version: "1.0.0",
       date: "30 April 2025",
-      tag: "Stable",
+      tag: "",
       description:
         "- Feature: **Perbaikan tampilan** pada halaman Note Editor. 🎨\n- Feature: **Implementasi konversi** romaji ke hiragana dan katakana secara otomatis. 🔤\n- Feature: **Implementasi fitur Quiz** untuk latihan interaktif. 🧠\n- UI: **Penyesuaian warna** di pengaturan flashcard. 🎨\n- UX: **Penambahan layout loading** di halaman Note. ⏳",
     },

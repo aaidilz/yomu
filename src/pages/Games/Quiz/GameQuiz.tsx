@@ -97,7 +97,7 @@ const GameQuiz: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 mt-5 text-[#64E9EE]">
+    <div className="min-h-screen flex items-center justify-center pt-20 text-[#64E9EE]">
       <div className="max-w-2xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

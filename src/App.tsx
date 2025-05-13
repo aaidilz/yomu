@@ -1,14 +1,16 @@
 import { lazy } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Changelog from "./pages/ChangeLog";
-import NotFound from "./pages/NotFound";
 
 // Lazy-loaded components
 const HomePage = lazy(() => import("./pages/HomePage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Changelog = lazy(() => import("./pages/ChangeLog"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
+const FeedBack = lazy(() => import("./pages/FeedBack"));
+
 // dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
 const DictionaryCreate = lazy(() => import("./pages/Dictionary/DictionaryCreate"));
@@ -33,6 +35,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/*" element={<NotFound />} />
+        <Route path="/feedback" element={<FeedBack />} />
+        {/* Public Routes */}
 
         {/* Protected Routes */}
         <Route
