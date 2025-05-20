@@ -62,14 +62,19 @@ export default function NotePreview() {
       </div>
 
       {/* Content Section */}
-      <div className="mt-8 p-6 rounded-xl bg-gray-800 border border-[#64E9EE]/20">
-        <div className="prose prose-invert max-w-none text-[#97C8EB]">
-          <MDEditor.Markdown
-            source={note.content}
-            style={{ whiteSpace: "pre-wrap", background: "transparent" }}
-          />
-        </div>
-      </div>
+      <MDEditor.Markdown
+        source={note.content}
+        style={{
+          backgroundColor: "#1f2937", // Tailwind: bg-gray-800
+          padding: "1.5rem",
+          borderRadius: "0.75rem",
+          border: "1px solid #64E9EE33",
+          color: "#f9fafb", // Tailwind: text-gray-100
+          lineHeight: "1.75",
+          fontSize: "1rem", // Tailwind: text-base
+          overflowWrap: "break-word",
+        }}
+      />
     </div>
   );
 }

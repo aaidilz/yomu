@@ -10,12 +10,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import {
-  Description,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
 
 import DictionaryItem from "./components/DictionaryItem";
 
@@ -33,8 +27,7 @@ const ITEMS_PER_PAGE = 6;
 
 const Dictionary: React.FC = () => {
   const [dictionaries, setDictionaries] = useState<Dictionary[]>([]);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [, setDeletingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [user, loading] = useAuthState(auth);
@@ -68,16 +61,41 @@ const Dictionary: React.FC = () => {
     [navigate]
   );
 
-  const handleDelete = useCallback(async (id: string) => {
-    setDeletingId(id);
-    try {
-      await DictionaryService.deleteDictionary(id);
-      setDictionaries((prev) => prev.filter((f) => f.id !== id));
-    } catch (error) {
-      console.error("Failed to delete dictionary", error);
-    } finally {
+  const onDeleteConfirm = useCallback(async (id: string) => {
+    const result = await Swal.fire({
+      title: "Yakin ingin menghapus data ini?",
+      text: "Data yang dihapus tidak dapat dikembalikan.",
+      icon: "warning",
+      showCancelButton: true,
+      background: "#0f172a",
+      color: "#fff",
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      setDeletingId(id);
+      try {
+        await DictionaryService.deleteDictionary(id);
+        setDictionaries((prev) => prev.filter((f) => f.id !== id));
+        await Swal.fire({
+          title: "Berhasil!",
+          text: "Data berhasil dihapus.",
+          icon: "success",
+          background: "#0f172a",
+          color: "#fff",
+        });
+      } catch (err) {
+        console.error("Gagal hapus data", err);
+        await Swal.fire({
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat menghapus.",
+          icon: "error",
+          background: "#0f172a",
+          color: "#fff",
+        });
+      }
       setDeletingId(null);
-      setConfirmDeleteId(null);
     }
   }, []);
 
@@ -130,7 +148,7 @@ const Dictionary: React.FC = () => {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate("/dictionary/new")}
-              className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-white px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+              className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-black px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
             >
               <AddIcon className="mr-2 transform translate-y-[-1px]" />
               Tambah
@@ -212,7 +230,7 @@ const Dictionary: React.FC = () => {
                   key={fc.id}
                   dictionary={fc}
                   onEdit={handleEdit}
-                  onDelete={() => setConfirmDeleteId(fc.id)}
+                  onDelete={onDeleteConfirm}
                 />
               ))}
             </div>
@@ -240,38 +258,6 @@ const Dictionary: React.FC = () => {
           </>
         )}
       </div>
-
-      {/* Delete Confirmation Modal */}
-      <Dialog
-        open={!!confirmDeleteId}
-        onClose={() => setConfirmDeleteId(null)}
-        className="fixed inset-0 z-50 flex items-center justify-center"
-      >
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-        <DialogPanel className="relative bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
-          <DialogTitle className="text-lg font-semibold mb-4">
-            Yakin ingin menghapus entri kamus ini?
-          </DialogTitle>
-          <Description className="mb-4 text-gray-600">
-            Entri kamus yang dihapus tidak dapat dikembalikan.
-          </Description>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => confirmDeleteId && handleDelete(confirmDeleteId)}
-              disabled={deletingId === confirmDeleteId}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
-            >
-              {deletingId === confirmDeleteId ? "Menghapus..." : "Hapus"}
-            </button>
-            <button
-              onClick={() => setConfirmDeleteId(null)}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-            >
-              Batal
-            </button>
-          </div>
-        </DialogPanel>
-      </Dialog>
     </div>
   );
 };
