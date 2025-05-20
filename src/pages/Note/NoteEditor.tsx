@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
+import { Title } from "@mui/icons-material";
 
 interface Note {
   id?: string;
@@ -107,19 +108,26 @@ export default function NoteEditor() {
       </div>
 
       {/* Form */}
-      <input
-        type="text"
-        placeholder="Judul Catatan..."
-        value={note.title}
-        onChange={(e) => setNote({ ...note, title: e.target.value })}
-        className="w-full p-2 mb-4 rounded bg-gray-800 border border-[#64E9EE]/20 text-white placeholder-gray-400"
-      />
+      <div className="w-full bg-gray-800 backdrop-blur-sm p-4 rounded-2xl shadow-xl mb-8">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Judul Catatan..."
+              value={note.title}
+              onChange={(e) => setNote({ ...note, title: e.target.value })}
+              className="w-full pl-12 pr-4 py-3 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 placeholder-gray-400 transition-all"
+            />
+            <Title className="h-6 w-6 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
+      </div>
 
       <div className="mb-4">
         <button
           onClick={() => setIsPreview(!isPreview)}
           className="px-4 py-2 text-sm rounded-md transition-all
-          bg-[#64E9EE]/20 backdrop-blur-sm border border-[#64E9EE]/40
+          bg-gray-800 backdrop-blur-sm border border-[#64E9EE]/40
           hover:bg-[#64E9EE]/30 text-white shadow-sm flex items-center gap-2"
         >
           {isPreview ? "Kembali ke Editor" : "Lihat Preview"}
@@ -160,11 +168,14 @@ export default function NoteEditor() {
             <MDEditor.Markdown
               source={note.content}
               style={{
-                whiteSpace: "pre-wrap",
-                backgroundColor: "#1f2937",
-                padding: "1rem",
-                borderRadius: "0.5rem",
+                backgroundColor: "#1f2937", // Tailwind: bg-gray-800
+                padding: "1.5rem",
+                borderRadius: "0.75rem",
                 border: "1px solid #64E9EE33",
+                color: "#f9fafb", // Tailwind: text-gray-100
+                lineHeight: "1.75",
+                fontSize: "1rem", // Tailwind: text-base
+                overflowWrap: "break-word",
               }}
             />
           </motion.div>

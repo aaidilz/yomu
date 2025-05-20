@@ -1,15 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import AuthService from "../services/AuthService";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State untuk menyimpan pesan error
   const [loading, setLoading] = useState(false); // State untuk loading status
   const navigate = useNavigate();
+
+  useEffect(() => {
+  if (errorMessage) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: errorMessage,
+      background: '#0f172a',
+      color: '#fff',
+    });
+  }
+}, [errorMessage]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,7 +33,6 @@ export default function Login() {
       await AuthService.signInWithEmail(email, password);
       navigate("/home");
     } catch (error) {
-      console.error("Error logging in", error);
       setErrorMessage("Email atau password salah");
     } finally {
       setLoading(false); // Matikan loading setelah request selesai
@@ -35,7 +47,6 @@ export default function Login() {
       await AuthService.signInWithGoogle();
       navigate("/home");
     } catch (error) {
-      console.error("Error with Google login", error);
       setErrorMessage("Gagal login dengan Google");
     } finally {
       setLoading(false);
@@ -45,20 +56,13 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center  relative">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]  to-[#334155]"></div>
+      <div className="absolute inset-0 bg-[#1A202C]"></div>
 
       {/* Card Container */}
-      <div className="relative bg-gradient-to-r from-[#0f172a]  to-[#334155] p-8 rounded-2xl shadow-lg w-full max-w-md">
+      <div className="relative bg-[#0f172a] p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-white mb-6">
           Login
         </h2>
-
-        {/* Error Message */}
-        {errorMessage && (
-          <div className="mb-4 p-3 text-sm text-red-600 bg-red-100 border border-red-300 rounded">
-            {errorMessage}
-          </div>
-        )}
 
         {/* Login Form */}
         <form className="space-y-4" onSubmit={handleLogin}>

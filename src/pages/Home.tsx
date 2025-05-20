@@ -36,8 +36,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen text-[#97C8EB]">
-      <div className="max-w-4xl mx-auto px-4 pt-20">
+    <div className="min-h-screen flex items-center justify-center text-[#97C8EB]">
+      <div className="max-w-4xl w-full mx-auto px-4 pt-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,7 +65,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-[#093A3E] rounded-xl p-6 border border-[#64E9EE]/20"
+            className="bg-gray-900 rounded-xl p-6 border border-[#64E9EE]/20"
           >
             <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
               📝 Active Notes
@@ -75,7 +75,7 @@ export default function Home() {
 
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-[#093A3E] rounded-xl p-6 border border-[#64E9EE]/20"
+            className="bg-gray-900 rounded-xl p-6 border border-[#64E9EE]/20"
           >
             <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
               📚 Active Cards
@@ -87,7 +87,7 @@ export default function Home() {
 
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-[#093A3E] rounded-xl p-6 border border-[#64E9EE]/20"
+            className="bg-gray-900 rounded-xl p-6 border border-[#64E9EE]/20"
           >
             <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
               🎯 Current Streak

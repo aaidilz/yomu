@@ -1,10 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Description,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import NoteService from "../../services/NoteService";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,6 +6,7 @@ import NoteItem from "./components/NoteItem";
 import { motion } from "framer-motion";
 import { Pagination, Stack } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 interface Note {
   id: string;
@@ -22,8 +17,7 @@ interface Note {
 const NoteList: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [, setDeletingId] = useState<string | null>(null);
   const [loadingEditId, setLoadingEditId] = useState<string | null>(null);
   const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,16 +36,42 @@ const NoteList: React.FC = () => {
     setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    try {
-      await NoteService.deleteNote(id);
-      setNotes((prev) => prev.filter((n) => n.id !== id));
-    } catch (err) {
-      console.error("Gagal hapus catatan", err);
+  const onDeleteConfirm = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Yakin ingin menghapus catatan ini?",
+      text: "Catatan yang dihapus tidak dapat dikembalikan.",
+      icon: "warning",
+      showCancelButton: true,
+      background: "#0f172a",
+      color: "#fff",
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      setDeletingId(id);
+      try {
+        await NoteService.deleteNote(id);
+        setNotes((prev) => prev.filter((n) => n.id !== id));
+        await Swal.fire({
+          title: "Berhasil!",
+          text: "Catatan berhasil dihapus.",
+          icon: "success",
+          background: "#0f172a",
+          color: "#fff",
+        });
+      } catch (err) {
+        console.error("Gagal hapus catatan", err);
+        await Swal.fire({
+          title: "Gagal!",
+          text: "Terjadi kesalahan saat menghapus.",
+          icon: "error",
+          background: "#0f172a",
+          color: "#fff",
+        });
+      }
+      setDeletingId(null);
     }
-    setDeletingId(null);
-    setConfirmDeleteId(null);
   };
 
   const handleEdit = async (id: string) => {
@@ -96,15 +116,19 @@ const NoteList: React.FC = () => {
     <div className="pt-20 flex justify-center items-center flex-col px-4">
       {/* Header */}
       <div className="w-full max-w-6xl mb-8">
-        <div className="w-full max-w-6xl flex justify-between items-center px-4 mb-6">
-          <h1 className="text-3xl font-bold text-[#64E9EE]">Catatan</h1>
-          <button
-            onClick={() => navigate("/note/new")}
-            className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-white px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
-          >
-            <AddIcon className="mr-2 transform translate-y-[-1px]" />
-            Tambah
-          </button>
+        <div className="flex justify-between items-center w-full mb-8">
+          <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
+            Note
+          </h1>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate("/note/new")}
+              className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-black px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+            >
+              <AddIcon className="mr-2 transform translate-y-[-1px]" />
+              Tambah
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -144,9 +168,11 @@ const NoteList: React.FC = () => {
               ))}
             </motion.div>
           ) : filtered.length === 0 ? (
-            <p className="text-center text-gray-500 py-10 text-lg">
-              Catatan gak ditemukan :(
-            </p>
+            <div className="text-center py-16">
+              <p className="text-gray-500 text-lg">
+                Data tidak ada ditemukan :(
+              </p>
+            </div>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -155,7 +181,7 @@ const NoteList: React.FC = () => {
                     note={note}
                     onPreview={handlePreview}
                     onEdit={handleEdit}
-                    onDeleteConfirm={setConfirmDeleteId}
+                    onDelete={onDeleteConfirm}
                     loadingPreviewId={loadingPreviewId}
                     loadingEditId={loadingEditId}
                   />
@@ -185,38 +211,6 @@ const NoteList: React.FC = () => {
             </>
           )}
         </div>
-
-        {/* Modal Hapus */}
-        <Dialog
-          open={!!confirmDeleteId}
-          onClose={() => setConfirmDeleteId(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center"
-        >
-          <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-          <DialogPanel className="relative bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full">
-            <DialogTitle className="text-lg font-semibold mb-4">
-              Yakin ingin menghapus catatan ini?
-            </DialogTitle>
-            <Description className="mb-4 text-gray-600">
-              Catatan yang dihapus tidak dapat dikembalikan.
-            </Description>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => confirmDeleteId && handleDelete(confirmDeleteId)}
-                disabled={deletingId === confirmDeleteId}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition disabled:opacity-50"
-              >
-                {deletingId === confirmDeleteId ? "Menghapus..." : "Hapus"}
-              </button>
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-              >
-                Batal
-              </button>
-            </div>
-          </DialogPanel>
-        </Dialog>
       </div>
     </div>
   );

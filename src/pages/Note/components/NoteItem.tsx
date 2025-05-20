@@ -14,31 +14,36 @@ interface NoteItemProps {
   note: Note;
   onPreview: (id: string) => void;
   onEdit: (id: string) => void;
-  onDeleteConfirm: (id: string) => void;
+  onDelete: (id: string) => void;
   loadingPreviewId: string | null;
   loadingEditId: string | null;
 }
 
 const NoteItem: React.FC<NoteItemProps> = React.memo(
-  ({ note, onPreview, onEdit, onDeleteConfirm, loadingEditId, loadingPreviewId }) => {
+  ({
+    note,
+    onPreview,
+    onEdit,
+    onDelete,
+    loadingEditId,
+    loadingPreviewId,
+  }) => {
     return (
       <motion.div
+        layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        whileHover={{ scale: 1.02 }}
-        className="bg-gray-800 rounded-xl p-4 md:p-6 border border-[#64E9EE]/20 shadow-lg hover:shadow-2xl transition-shadow h-full flex flex-col"
+        transition={{ duration: 0.3 }}
+        className="bg-gray-800 rounded-xl p-4 border border-[#64E9EE]/20 shadow-lg hover:shadow-2xl transition-shadow min-h-[240px]"
       >
         <div className="flex flex-col h-full justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-[#64E9EE] mb-2">
-              {note.title}
-            </h2>
+          <div className="flex flex-col space-y-2">
+            <h2 className="text-xl font-bold text-[#64E9EE]">{note.title}</h2>
             <p className="text-white text-sm whitespace-pre-wrap line-clamp-4">
               {note.content}
             </p>
           </div>
-          <div className="flex justify-end space-x-2 mt-4">
+          <div className="flex justify-end space-x-2 mt-4 pt-4 border-t border-[#64E9EE]/20">
             <button
               onClick={() => onPreview(note.id)}
               disabled={loadingPreviewId === note.id}
@@ -47,7 +52,7 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
             >
               {loadingPreviewId === note.id ? (
                 <motion.div
-                  animate={{ rotate: 360 }}
+                  animate={{ rotate: -360 }}
                   transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                 >
                   <Loop fontSize="small" />
@@ -64,7 +69,7 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
             >
               {loadingEditId === note.id ? (
                 <motion.div
-                  animate={{ rotate: 360 }}
+                  animate={{ rotate: -360 }}
                   transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                 >
                   <Loop fontSize="small" />
@@ -74,7 +79,7 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
               )}
             </button>
             <button
-              onClick={() => onDeleteConfirm(note.id)}
+              onClick={() => onDelete(note.id)}
               className="text-red-400 hover:text-red-200 transition"
               title="Delete"
             >
