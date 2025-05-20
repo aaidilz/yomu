@@ -62,7 +62,6 @@ const Dictionary: React.FC = () => {
   );
 
   const onDeleteConfirm = useCallback(async (id: string) => {
-    const Swal = (await import("sweetalert2")).default;
     const result = await Swal.fire({
       title: "Yakin ingin menghapus data ini?",
       text: "Data yang dihapus tidak dapat dikembalikan.",
