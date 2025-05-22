@@ -4,6 +4,7 @@ import Switch from "@mui/material/Switch";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FeedBackService from "../services/FeedBackService";
+import Swal from "sweetalert2";
 
 interface Feedback {
   id?: string;
@@ -28,19 +29,28 @@ export default function FeedBack() {
     };
     FeedBackService.addFeedback(feedbackData)
       .then(() => {
-        alert("Feedback submitted successfully!");
-        window.history.back();
-        (e.target as HTMLFormElement).reset();
+        Swal.fire({
+          icon: "success",
+          title: "Feedback Terkirim",
+          text: "Terima kasih atas umpan balik Anda!",
+        }).then(() => {
+          window.history.back();
+          (e.target as HTMLFormElement).reset();
+        });
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error("Error submitting feedback:", error);
-        alert("Failed to submit feedback. Please try again later.");
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: "Gagal mengirim umpan balik. Silakan coba lagi.",
+        });
       });
   };
 
   return (
     <section>
-      <div className="min-h-screen flex flex-col bg-[#1A202C]">
+      <div className="min-h-screen flex flex-col bg-gray-900 text-white">
         {/* Navbar */}
         <HomeNavbar />
 

@@ -1,117 +1,85 @@
 import { motion } from "framer-motion";
-import Button from "@mui/material/Button";
-import { History } from "@mui/icons-material";
-import HomeFooter from "../components/HomeFooter";
+import { useMemo } from "react";
 import HomeNavbar from "../components/HomeNavbar";
+import HomeFooter from "../components/HomeFooter";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { delay: 0.3, duration: 0.8 },
-  },
-};
-
-const textVariants = {
-  hidden: { x: 100, opacity: 0 },
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 120 },
-  },
-};
-
-const imageVariants = {
-  hidden: { x: -100, opacity: 0 },
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 120 },
-  },
+// Generate random bubbles with different properties
+const generateBubbles = (count = 15) => {
+  return Array.from({ length: count }).map((_, index) => {
+    const size = Math.floor(Math.random() * 40 + 10); // Random size between 10-50px
+    return (
+      <motion.div
+        key={index}
+        className="absolute rounded-full bg-white/10"
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+        initial={{
+          y: 100,
+          scale: 0.5,
+        }}
+        animate={{
+          y: -100,
+          scale: 1.2,
+        }}
+        transition={{
+          duration: Math.random() * 5 + 5, // Random duration between 5-10s
+          repeat: Infinity,
+          repeatType: "loop",
+          ease: "linear",
+          delay: Math.random() * 5,
+        }}
+      />
+    );
+  });
 };
 
 export default function HomePage() {
+  // Memoize the bubbles to avoid recalculating them on every render
+  const bubbles = useMemo(() => generateBubbles(50), []);
+
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      {/* Navbar */}
+    <div className="flex flex-col min-h-screen">
       <HomeNavbar />
-
-      {/* Main Content */}
-      <div
-        className="min-h-screen flex flex-col bg-gradient-to-r from-[#001011] to-[#334155]"
-        style={{
-          backgroundImage:
-            "url('/bg1.jpg'), linear-gradient(to right, #001011, #334155)",
-          backgroundBlendMode: "overlay",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        {/* Header */}
-        {/* Konten Utama */}
-        <div className="flex-grow flex items-center py-16">
-          <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            {/* Left Column - Image */}
-            <motion.img
-              variants={imageVariants}
-              src="shiroko.jpg"
-              alt="Learn Japanese"
-              className="w-52 h-52 md:w-96 md:h-96 rounded mx-auto"
-            />
-
-            {/* Right Column - Text */}
-            <motion.div
-              variants={textVariants}
-              className="text-center md:text-left"
-            >
-              <h1 className="text-4xl font-bold text-[#97C8EB] mb-4">
-                Belajar Bahasa Jepang Menjadi Menyenangkan!
-              </h1>
-              <p className="text-lg text-white leading-relaxed mb-6">
-                Mulai perjalanan belajar bahasa Jepangmu hari ini. Pelajari
-                kanji, tata bahasa, dan percakapan sehari-hari dengan metode
-                interaktif yang menyenangkan!
-              </p>
-
-              {/* Tombol Mulai Belajar & Changelog */}
-              <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-start">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="contained"
-                    size="large"
-                    href="/home"
-                    className="px-8 py-4 text-lg rounded-full text-[#13AAFB9]"
-                  >
-                    Mulai Belajar Sekarang
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    startIcon={<History />}
-                    href="/changelog"
-                    className="px-8 py-4 text-lg rounded-full border-2 text-[#64E9EE]"
-                  >
-                    Changelog
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
+      <section className="min-h-screen flex-grow flex items-center justify-center flex-col text-center bg-gradient-to-b from-[#0F172A] to-[#1E293B] relative overflow-hidden">
+        {/* Bubble Container */}
+        <div className="absolute inset-0 z-0">
+          {bubbles}
         </div>
 
-        {/* Footer */}
-        <HomeFooter />
-      </div>
-    </motion.div>
+        {/* Content */}
+        <div className="text-center max-w-2xl px-4 relative z-10">
+          <span className="block text-sm text-gray-300 mb-2">
+            #SpiritOfLearning
+          </span>
+          <h1 className="text-5xl font-extrabold text-white mb-6 leading-tight">
+            YOMU
+          </h1>
+          <p className="text-base text-gray-400">
+            Mulai perjalanan belajar bahasa Jepangmu hari ini. Pelajari kanji,
+            tata bahasa, dan percakapan sehari-hari dengan metode interaktif
+            yang menyenangkan!
+          </p>
+        </div>
+        <div className="flex justify-center mt-8 relative z-10">
+          <a
+            href="#"
+            className="bg-[#13AAFB] text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-[#0f8dbf] transition duration-300"
+          >
+            Get Started
+          </a>
+          <a
+            href="#"
+            className="ml-4 bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300"
+          >
+            Learn More
+          </a>
+        </div>
+      </section>
+      <HomeFooter />
+    </div>
   );
 }

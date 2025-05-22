@@ -10,6 +10,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { motion } from "framer-motion";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Swal from "sweetalert2";
 
 import DictionaryItem from "./components/DictionaryItem";
 

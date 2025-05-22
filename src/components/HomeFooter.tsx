@@ -2,7 +2,7 @@ import { GitHub, Instagram } from "@mui/icons-material";
 
 export default function HomeFooter() {
   return (
-    <footer className="bg-gray-900 text-gray-200">
+    <footer className="bg-slate-950 text-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
         {/* Social Media */}
         <div>
