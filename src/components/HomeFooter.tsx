@@ -45,6 +45,12 @@ export default function HomeFooter() {
           >
             Feedback
           </a>
+          <a
+            href="/changelog"
+            className="text-sm text-gray-400 hover:text-[#13AAFB]"
+          >
+            ChangeLog
+          </a>
         </div>
 
         {/* Copyright */}
