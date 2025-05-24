@@ -34,16 +34,22 @@ export default function HomeFooter() {
         {/* About */}
         <div className="flex flex-wrap justify-center gap-4">
           <a
-            href="#"
+            href="/about"
             className="text-sm text-gray-400 hover:text-[#13AAFB]"
           >
-            About Me
+            About
           </a>
           <a
             href="/feedback"
             className="text-sm text-gray-400 hover:text-[#13AAFB]"
           >
             Feedback
+          </a>
+          <a
+            href="/changelog"
+            className="text-sm text-gray-400 hover:text-[#13AAFB]"
+          >
+            ChangeLog
           </a>
         </div>
 

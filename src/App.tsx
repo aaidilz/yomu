@@ -9,6 +9,7 @@ const Changelog = lazy(() => import("./pages/ChangeLog"));
 const Login = lazy(() => import("./pages/Login"));
 const Home = lazy(() => import("./pages/Home"));
 const FeedBack = lazy(() => import("./pages/FeedBack"));
+const About = lazy(() => import("./pages/About"));
 
 // dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
@@ -34,6 +35,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<About />} />
         <Route path="/changelog" element={<Changelog />} />
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />} />
