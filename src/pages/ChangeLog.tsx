@@ -1,14 +1,27 @@
 import ReactMarkdown from "react-markdown";
 import Footers from "../components/HomeFooter";
 import HomeNavbar from "../components/HomeNavbar";
+import { useEffect } from "react";
 
 const ChangeLog = () => {
+  useEffect(() => {
+    document.title = "ChangeLog | Yomu";
+  }, []);
+
   const changelogs = [
+    {
+      version: "1.0.2",
+      date: "24 Mei 2025",
+      tag: "Current",
+      description:
+        "- Update: **Tampilan Home diperbarui** dengan desain baru & warna aksen yang disesuaikan. ✨ \n- BugFix: **Celah putih di sisi kanan** saat scrollbar disembunyikan telah diperbaiki. 🐞 \n- Feature: **Implementasi Autofill** pada entry data Dictionary \n- Adjust: **Penyesuaian tampilan** pada bagian penambahan entry data Dictionary. 🎨"
+    },
     {
       version: "1.0.1",
       date: "10 Mei 2025",
-      tag: "Current",
-      description: "- Feature: **Implementasi feedback** untuk data collecting \n- Adjust: **Tampilan** agar lebih responsif dan user-friendly."
+      tag: "",
+      description:
+        "- Feature: **Implementasi feedback** untuk data collecting \n- Adjust: **Tampilan** agar lebih responsif dan user-friendly.",
     },
     {
       version: "1.0.0",

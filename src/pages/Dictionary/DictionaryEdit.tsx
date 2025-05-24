@@ -34,6 +34,10 @@ export default function DictionaryEdit() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Dictionary Edit | Yomu";
+  }, []);
+
+  useEffect(() => {
     const fetchDictionary = async () => {
       if (!user || !id) return;
 

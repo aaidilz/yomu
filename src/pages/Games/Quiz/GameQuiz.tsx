@@ -25,6 +25,10 @@ const GameQuiz: React.FC = () => {
   const [isRandom, setIsRandom] = useState(false);
 
   useEffect(() => {
+    document.title = "Quiz | Yomu";
+  }, []);
+  
+  useEffect(() => {
     async function fetchData() {
       const data = await DictionaryService.getUserDictionaries();
       if (data.length === 0) return;

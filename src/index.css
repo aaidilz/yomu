@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
-html {
-  overflow-x: hidden;
-}   
+html, body {
+  overflow-x: hidden !important;
+  padding-right: 0 !important;
+}
+
+.w-md-editor-toolbar {
+  font-size: 1.1rem;
+  height: 48px;
+  gap: 8px; /* beri jarak antar button */
+}
+
+.w-md-editor-toolbar button {
+  padding: 6px 10px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.w-md-editor-toolbar button svg {
+  width: 20px;
+  height: 20px;
+}

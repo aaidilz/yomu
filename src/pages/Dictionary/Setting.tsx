@@ -6,6 +6,10 @@ const Setting = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dictionaryCount, setDictionaryCount] = useState<number | null>(null);
 
+  useEffect(() => {
+      document.title = "Dictionary Setting | Yomu";
+    }, []);
+
   // Ambil jumlah dictionaries saat komponen dimuat
   useEffect(() => {
     const fetchDictionaryCount = async () => {

@@ -9,7 +9,11 @@ export default function Home() {
   const [user] = useAuthState(auth);
   const [flashcardCount, setFlashcardCount] = useState(0);
   const [noteCount, setNoteCount] = useState(0);
-
+  
+  useEffect(() => {
+    document.title = "Home | Yomu";
+  }, []);
+ 
   // Fetch user data
   useEffect(() => {
     const fetchData = async () => {
@@ -60,17 +64,16 @@ export default function Home() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
             { title: "📝 Active Notes", value: noteCount },
             { title: "📚 Active Cards", value: flashcardCount },
-            { title: "🎯 Current Streak", value: "7 Days" },
           ].map((stat, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="bg-gray-900 rounded-xl p-6 border border-[#64E9EE]/20 hover:border-[#64E9EE]/40 transition-colors"
+              className="bg-gray-800 rounded-xl p-6 border border-[#64E9EE]/20 hover:border-[#64E9EE]/40 transition-colors"
             >
               <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
                 {stat.title}

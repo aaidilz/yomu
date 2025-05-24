@@ -19,6 +19,10 @@ const GameFlashcard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
+    document.title = "Flashcard | Yomu";
+  }, []);
+
+  useEffect(() => {
     const fetchDictionaries = async () => {
       const userDictionaries = await DictionaryService.getUserDictionaries();
       setCards(userDictionaries);

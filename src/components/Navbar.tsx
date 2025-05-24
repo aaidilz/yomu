@@ -28,7 +28,7 @@ export default function Navbars() {
               to="/home"
               className="text-[#64E9EE] hover:text-[#13AAFB] text-xl font-bold"
             >
-              Home
+              YOMU
             </Link>
 
             {/* Desktop Navigation */}

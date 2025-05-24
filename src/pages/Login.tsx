@@ -13,6 +13,10 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Login | Yomu";
+  }, []);
+
+  useEffect(() => {
   if (errorMessage) {
     Swal.fire({
       icon: 'error',

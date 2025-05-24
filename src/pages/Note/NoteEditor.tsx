@@ -25,6 +25,10 @@ export default function NoteEditor() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    document.title = "Note Editor | Yomu";
+  }, []);
+
+  useEffect(() => {
     if (id) {
       (async () => {
         try {

@@ -15,6 +15,10 @@ export default function NotePreview() {
   const [note, setNote] = useState<Note | null>(null);
 
   useEffect(() => {
+    document.title = "Note Preview | Yomu";
+  }, []);
+
+  useEffect(() => {
     async function fetchNote() {
       try {
         const notes = await NoteService.getUserNotes();
