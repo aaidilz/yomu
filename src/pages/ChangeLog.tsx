@@ -14,7 +14,7 @@ const ChangeLog = () => {
       date: "24 Mei 2025",
       tag: "Current",
       description:
-        "- Update: **Tampilan Home diperbarui** dengan desain baru & warna aksen yang disesuaikan. ✨ \n- BugFix: **Celah putih di sisi kanan** saat scrollbar disembunyikan telah diperbaiki. 🐞 \n- Feature: **Implementasi Autofill** pada entry data Dictionary \n- Adjust: **Penyesuaian tampilan** pada bagian penambahan entry data Dictionary. 🎨"
+        "- Update: **Tampilan Home diperbarui** dengan desain baru & warna aksen yang disesuaikan. ✨ \n- BugFix: **Celah putih di sisi kanan** saat scrollbar disembunyikan telah diperbaiki. 🐞 \n- Feature: **Implementasi Autofill** pada entry data Dictionary \n- Adjust: **Penyesuaian tampilan** pada bagian penambahan entry data Dictionary. 🎨",
     },
     {
       version: "1.0.1",
@@ -33,7 +33,7 @@ const ChangeLog = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1A202C]">
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       {/* Navbar */}
       <HomeNavbar />
       {/* Content Card */}
