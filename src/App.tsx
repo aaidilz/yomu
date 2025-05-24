@@ -13,11 +13,15 @@ const FeedBack = lazy(() => import("./pages/FeedBack"));
 
 // dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
-const DictionaryCreate = lazy(() => import("./pages/Dictionary/DictionaryCreate"));
+const DictionaryCreate = lazy(
+  () => import("./pages/Dictionary/DictionaryCreate")
+);
 const DictionaryEdit = lazy(() => import("./pages/Dictionary/DictionaryEdit"));
 const Setting = lazy(() => import("./pages/Dictionary/Setting"));
 // games
-const GamesFlashcard = lazy(() => import("./pages/Games/Flashcard/GameFlashcard"));
+const GamesFlashcard = lazy(
+  () => import("./pages/Games/Flashcard/GameFlashcard")
+);
 
 const GamesQuiz = lazy(() => import("./pages/Games/Quiz/GameQuiz"));
 
@@ -42,7 +46,13 @@ const App = () => {
         <Route
           path="/home"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
@@ -52,7 +62,13 @@ const App = () => {
         <Route
           path="/dictionary"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <Dictionary />
               </ProtectedRoute>
@@ -62,7 +78,13 @@ const App = () => {
         <Route
           path="/dictionary/new"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <DictionaryCreate />
               </ProtectedRoute>
@@ -72,7 +94,13 @@ const App = () => {
         <Route
           path="/dictionary/edit/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <DictionaryEdit />
               </ProtectedRoute>
@@ -82,7 +110,13 @@ const App = () => {
         <Route
           path="/dictionary/setting"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <Setting />
               </ProtectedRoute>
@@ -92,7 +126,13 @@ const App = () => {
         <Route
           path="/games-flashcard"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <GamesFlashcard />
               </ProtectedRoute>
@@ -102,7 +142,13 @@ const App = () => {
         <Route
           path="/games-quiz"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <GamesQuiz />
               </ProtectedRoute>
@@ -112,7 +158,13 @@ const App = () => {
         <Route
           path="/note"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <NoteList />
               </ProtectedRoute>
@@ -122,7 +174,13 @@ const App = () => {
         <Route
           path="/note/new"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <NoteEditor />
               </ProtectedRoute>
@@ -132,7 +190,13 @@ const App = () => {
         <Route
           path="/note/edit/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <NoteEditor />
               </ProtectedRoute>
@@ -142,7 +206,13 @@ const App = () => {
         <Route
           path="/note/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div
+              style={{
+                backgroundColor: "#1A202C",
+                minHeight: "100vh",
+                minWidth: "100vw",
+              }}
+            >
               <ProtectedRoute>
                 <NotePreview />
               </ProtectedRoute>

@@ -66,16 +66,16 @@ export default function HomePage() {
         </div>
         <div className="flex justify-center mt-8 relative z-10">
           <a
-            href="#"
+            href="/home"
             className="bg-[#13AAFB] text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-[#0f8dbf] transition duration-300"
           >
             Get Started
           </a>
           <a
-            href="#"
+            href="/changelog"
             className="ml-4 bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:bg-gray-700 transition duration-300"
           >
-            Learn More
+            ChangeLog
           </a>
         </div>
       </section>

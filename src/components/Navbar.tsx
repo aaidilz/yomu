@@ -90,9 +90,16 @@ export default function Navbars() {
             </div>
           </div>
 
-          {/* Right side - Profile dropdown */}
+          {/* Right side - Feedback + Profile dropdown */}
           <div className="flex items-center">
-            <Menu as="div" className="relative">
+            <Link
+              to="/feedback"
+              className="hidden md:inline-block px-3 py-2 rounded-md text-[#97C8EB] hover:text-[#64E9EE] hover:bg-[#093A3E] mr-4"
+            >
+              Feedback
+            </Link>
+
+            <Menu as="div" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:relative">
               <MenuButton className="flex items-center space-x-2 group">
                 {user?.photoURL && (
                   <img
@@ -144,15 +151,15 @@ export default function Navbars() {
                 </MenuItems>
               </Transition>
             </Menu>
-          </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 hover:bg-[#093A3E] rounded-lg"
-          >
-            <MenuIcon className="w-6 h-6" />
-          </button>
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 hover:bg-[#093A3E] rounded-lg"
+            >
+              <MenuIcon className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -184,6 +191,12 @@ export default function Navbars() {
                 Quiz
               </Link>
             </div>
+            <Link
+              to="/feedback"
+              className="block px-4 py-2 hover:bg-[#093A3E] text-[#97C8EB] hover:text-[#64E9EE]"
+            >
+              Feedback
+            </Link>
           </div>
         )}
       </div>
