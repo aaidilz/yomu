@@ -7,11 +7,12 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Box, Typography } from "@mui/material";
+import { Box, Switch, Typography } from "@mui/material";
 import * as wanakana from "wanakana";
 
 // Validation patterns
-const JAPANESE_REGEX = /^[\u4E00-\u9FAF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF]+$/;
+const JAPANESE_REGEX =
+  /^[\u4E00-\u9FAF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF]+$/;
 const KATAKANA_REGEX = /^[\u30A0-\u30FF]+$/;
 const ROMANIZATION_REGEX = /^[a-zA-Z\s\-_!?]+$/;
 
@@ -27,8 +28,12 @@ interface Dictionary {
 
 export default function DictionaryEdit() {
   const [dictionary, setDictionary] = useState<Dictionary | null>(null);
-  const [errors, setErrors] = useState<Partial<Record<keyof Dictionary, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof Dictionary, string>>
+  >({});
   const [saving, setSaving] = useState(false);
+  const [autoConvertHiragana, setAutoConvertHiragana] = useState(true);
+  const [autoConvertKatakana, setAutoConvertKatakana] = useState(true);
   const [user] = useAuthState(auth);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -63,40 +68,46 @@ export default function DictionaryEdit() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    let newValue = value;
-  
-    // Object yang akan menyimpan perubahan field
     const updatedFields: { [key: string]: string } = {};
-  
+
     if (name === "hiragana") {
-      newValue = wanakana.toHiragana(value);
-      updatedFields[name] = newValue;
+      if (autoConvertHiragana) {
+        updatedFields.hiragana = wanakana.toHiragana(value);
+      } else {
+        updatedFields.hiragana = value;
+      }
     } else if (name === "katakana") {
-      newValue = wanakana.toKatakana(value);
-      updatedFields[name] = newValue;
+      if (autoConvertKatakana) {
+        updatedFields.katakana = wanakana.toKatakana(value);
+      } else {
+        updatedFields.katakana = value;
+      }
     } else if (name === "romaji") {
-      newValue = wanakana.toRomaji(value); // tetap konversi ke romaji
-      updatedFields["romaji"] = newValue;
-      updatedFields["hiragana"] = wanakana.toHiragana(value); // auto update hiragana
+      updatedFields.romaji = value;
+
+      if (autoConvertHiragana) {
+        updatedFields.hiragana = wanakana.toHiragana(value);
+      }
+
+      if (autoConvertKatakana) {
+        updatedFields.katakana = wanakana.toKatakana(value);
+      }
     } else {
-      updatedFields[name] = newValue;
+      updatedFields[name] = value;
     }
-  
-    setDictionary((prev) =>
-      prev ? { ...prev, ...updatedFields } : null
-    );
-  
+
+    setDictionary((prev) => (prev ? { ...prev, ...updatedFields } : null));
+
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-  
 
   const validate = () => {
     if (!dictionary) return false;
     const newErrors: Partial<Record<keyof Dictionary, string>> = {};
-    
+
     // Required fields validation
-    const requiredFields: (keyof Dictionary)[] = ['kanji', 'arti', 'kategori'];
-    requiredFields.forEach(field => {
+    const requiredFields: (keyof Dictionary)[] = ["kanji", "arti", "kategori"];
+    requiredFields.forEach((field) => {
       if (!dictionary[field].trim()) {
         newErrors[field] = "Kolom ini wajib diisi";
       }
@@ -105,6 +116,10 @@ export default function DictionaryEdit() {
     // Format validation
     if (dictionary.kanji && !JAPANESE_REGEX.test(dictionary.kanji)) {
       newErrors.kanji = "Hanya boleh menggunakan karakter Jepang";
+    }
+
+    if (dictionary.hiragana && !JAPANESE_REGEX.test(dictionary.hiragana)) {
+      newErrors.hiragana = "Hanya boleh menggunakan karakter Jepang";
     }
 
     if (dictionary.katakana && !KATAKANA_REGEX.test(dictionary.katakana)) {
@@ -174,18 +189,67 @@ export default function DictionaryEdit() {
           </Button>
         </div>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {/* Toggle untuk Hiragana */}
+        <Box
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            border: "1px solid #64E9EE20",
+            bgcolor: "rgba(100, 233, 238, 0.05)",
+            mb: 3,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* Toggle untuk Hiragana */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography sx={{ color: "#A0AEC0" }}>
+                Autofill Hiragana
+              </Typography>
+              <Switch
+                checked={autoConvertHiragana}
+                onChange={() => setAutoConvertHiragana(!autoConvertHiragana)}
+                color="primary"
+              />
+            </Box>
+            {/* Toggle untuk Katakana */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography sx={{ color: "#A0AEC0" }}>
+                Autofill Katakana
+              </Typography>
+              <Switch
+                checked={autoConvertKatakana}
+                onChange={() => setAutoConvertKatakana(!autoConvertKatakana)}
+                color="primary"
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              label="Romaji"
+              name="romaji"
+              value={dictionary.romaji}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              sx={textFieldStyles}
+            />
+          </Box>
+        </Box>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {/* Japanese Characters Group */}
-          <Box sx={{ 
-            p: 3, 
-            borderRadius: 2, 
-            border: '1px solid #64E9EE20',
-            bgcolor: 'rgba(100, 233, 238, 0.05)'
-          }}>
-            <Typography variant="h6" sx={{ color: '#64E9EE', mb: 2 }}>
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              border: "1px solid #64E9EE20",
+              bgcolor: "rgba(100, 233, 238, 0.05)",
+            }}
+          >
+            <Typography variant="h6" sx={{ color: "#64E9EE", mb: 2 }}>
               Karakter Jepang
             </Typography>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <TextField
                 label="Kanji"
@@ -203,6 +267,8 @@ export default function DictionaryEdit() {
                 name="hiragana"
                 value={dictionary.hiragana}
                 onChange={handleChange}
+                error={!!errors.hiragana}
+                helperText={errors.hiragana}
                 variant="outlined"
                 sx={textFieldStyles}
               />
@@ -217,19 +283,34 @@ export default function DictionaryEdit() {
                 sx={textFieldStyles}
               />
             </div>
+            <Typography variant="body2" sx={{ color: "#A0AEC0", mt: 2 }}>
+              <b>Info:</b> Karena kanji tergantung konteks, bisa copy paste saja
+              dari sumber lain
+              <br />
+            </Typography>
+            <a
+              href="https://jisho.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              https://jisho.org/
+            </a>
           </Box>
 
           {/* Translation & Metadata Group */}
-          <Box sx={{ 
-            p: 3, 
-            borderRadius: 2, 
-            border: '1px solid #64E9EE20',
-            bgcolor: 'rgba(100, 233, 238, 0.05)'
-          }}>
-            <Typography variant="h6" sx={{ color: '#64E9EE', mb: 2 }}>
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              border: "1px solid #64E9EE20",
+              bgcolor: "rgba(100, 233, 238, 0.05)",
+            }}
+          >
+            <Typography variant="h6" sx={{ color: "#64E9EE", mb: 2 }}>
               Terjemahan & Kategori
             </Typography>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextField
                 label="Arti (Indonesia)"
@@ -255,25 +336,20 @@ export default function DictionaryEdit() {
                 SelectProps={{ native: true }}
                 sx={textFieldStyles}
               >
-                {["Kata Benda", "Kata sifat", "Slang", "Bisnis", "Umum"].map((option) => (
-                  <option key={option} value={option} style={{ background: '#2D3748' }}>
-                    {option}
-                  </option>
-                ))}
+                {["Kata Benda", "Kata sifat", "Slang", "Bisnis", "Umum"].map(
+                  (option) => (
+                    <option
+                      key={option}
+                      value={option}
+                      style={{ background: "#2D3748" }}
+                    >
+                      {option}
+                    </option>
+                  )
+                )}
               </TextField>
             </div>
           </Box>
-
-          {/* Romanization */}
-          <TextField
-            label="Romaji"
-            name="romaji"
-            value={dictionary.romaji}
-            onChange={handleChange}
-            variant="outlined"
-            fullWidth
-            sx={textFieldStyles}
-          />
         </Box>
 
         <Button

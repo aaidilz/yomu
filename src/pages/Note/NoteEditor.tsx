@@ -104,9 +104,9 @@ export default function NoteEditor() {
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="flex items-center gap-2 bg-[#64E9EE] hover:bg-[#4dcfd5] text-white px-4 py-2 rounded-md transition disabled:opacity-50"
+          className="flex items-center gap-2 bg-[#64E9EE] hover:bg-[#4dcfd5] text-black px-4 py-2 rounded-md transition disabled:opacity-50"
         >
-          <SaveIcon fontSize="small" />
+          <SaveIcon fontSize="small" style={{ color: "black" }} />
           {saving ? "Menyimpan..." : "Simpan"}
         </button>
       </div>
