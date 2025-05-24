@@ -7,17 +7,20 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Changelog = lazy(() => import("./pages/ChangeLog"));
 const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
 const FeedBack = lazy(() => import("./pages/FeedBack"));
 
 // dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
-const DictionaryCreate = lazy(() => import("./pages/Dictionary/DictionaryCreate"));
+const DictionaryCreate = lazy(
+  () => import("./pages/Dictionary/DictionaryCreate")
+);
 const DictionaryEdit = lazy(() => import("./pages/Dictionary/DictionaryEdit"));
 const Setting = lazy(() => import("./pages/Dictionary/Setting"));
 // games
-const GamesFlashcard = lazy(() => import("./pages/Games/Flashcard/GameFlashcard"));
+const GamesFlashcard = lazy(
+  () => import("./pages/Games/Flashcard/GameFlashcard")
+);
 
 const GamesQuiz = lazy(() => import("./pages/Games/Quiz/GameQuiz"));
 
@@ -33,7 +36,6 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/changelog" element={<Changelog />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/*" element={<NotFound />} />
         <Route path="/feedback" element={<FeedBack />} />
         {/* Public Routes */}
@@ -42,7 +44,7 @@ const App = () => {
         <Route
           path="/home"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
@@ -52,7 +54,7 @@ const App = () => {
         <Route
           path="/dictionary"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <Dictionary />
               </ProtectedRoute>
@@ -62,7 +64,7 @@ const App = () => {
         <Route
           path="/dictionary/new"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <DictionaryCreate />
               </ProtectedRoute>
@@ -72,7 +74,7 @@ const App = () => {
         <Route
           path="/dictionary/edit/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <DictionaryEdit />
               </ProtectedRoute>
@@ -82,7 +84,7 @@ const App = () => {
         <Route
           path="/dictionary/setting"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <Setting />
               </ProtectedRoute>
@@ -92,7 +94,7 @@ const App = () => {
         <Route
           path="/games-flashcard"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <GamesFlashcard />
               </ProtectedRoute>
@@ -102,7 +104,7 @@ const App = () => {
         <Route
           path="/games-quiz"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <GamesQuiz />
               </ProtectedRoute>
@@ -112,7 +114,7 @@ const App = () => {
         <Route
           path="/note"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <NoteList />
               </ProtectedRoute>
@@ -122,7 +124,7 @@ const App = () => {
         <Route
           path="/note/new"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <NoteEditor />
               </ProtectedRoute>
@@ -132,7 +134,7 @@ const App = () => {
         <Route
           path="/note/edit/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <NoteEditor />
               </ProtectedRoute>
@@ -142,7 +144,7 @@ const App = () => {
         <Route
           path="/note/:id"
           element={
-            <div style={{ backgroundColor: "#1A202C", minHeight: "100vh" }}>
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <NotePreview />
               </ProtectedRoute>

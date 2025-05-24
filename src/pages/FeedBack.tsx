@@ -1,7 +1,7 @@
 import HomeFooter from "../components/HomeFooter";
 import HomeNavbar from "../components/HomeNavbar";
 import Switch from "@mui/material/Switch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import FeedBackService from "../services/FeedBackService";
 import Swal from "sweetalert2";
@@ -15,6 +15,10 @@ interface Feedback {
 
 export default function FeedBack() {
   const [anonymous, setAnonymous] = useState(false);
+
+  useEffect(() => {
+    document.title = "Feedback | Yomu";
+  }, []);
 
   // dump feedback to console
   const handleSubmit = (e: React.FormEvent) => {

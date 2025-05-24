@@ -35,6 +35,10 @@ const Dictionary: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    document.title = "Dictionary | Yomu";
+  }, []);
 
   useEffect(() => {
     const fetchDictionaries = async () => {

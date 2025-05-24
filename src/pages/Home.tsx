@@ -4,34 +4,16 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import DictionaryService from "../services/DictionaryService";
 import NoteService from "../services/NoteService";
-import { ToastContainer, toast } from "react-toastify";
-import { Link } from "react-router-dom";
 
 export default function Home() {
   const [user] = useAuthState(auth);
   const [flashcardCount, setFlashcardCount] = useState(0);
   const [noteCount, setNoteCount] = useState(0);
-
+  
   useEffect(() => {
-    const showFeedbackToast = () => {
-      toast.info(
-        <div className="space-y-2">
-          <span>Saya ingin dengar feedback kalian! Jika ada waktu, silakan luangkan waktunya ya</span>
-          <div className="mt-2">
-            <Link
-              to="/feedback"
-              className="inline-block bg-[#13AAFB] hover:bg-[#0f8dbf] text-white px-4 py-2 rounded-md transition-colors duration-200 text-sm"
-            >
-              Kasih Feedback
-            </Link>
-          </div>
-        </div>
-      );
-    };
-
-    showFeedbackToast();
+    document.title = "Home | Yomu";
   }, []);
-
+ 
   // Fetch user data
   useEffect(() => {
     const fetchData = async () => {
@@ -58,19 +40,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex items-center justify-center text-[#97C8EB] relative">
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        draggable
-        theme="dark"
-        toastClassName="bg-gray-800"
-        progressClassName="bg-[#13AAFB]"
-      />
-
       <div className="max-w-4xl w-full mx-auto px-4 pt-20 pb-8">
         {/* Welcome Section */}
         <motion.div
@@ -95,17 +64,16 @@ export default function Home() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
             { title: "📝 Active Notes", value: noteCount },
             { title: "📚 Active Cards", value: flashcardCount },
-            { title: "🎯 Current Streak", value: "7 Days" },
           ].map((stat, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="bg-gray-900 rounded-xl p-6 border border-[#64E9EE]/20 hover:border-[#64E9EE]/40 transition-colors"
+              className="bg-gray-800 rounded-xl p-6 border border-[#64E9EE]/20 hover:border-[#64E9EE]/40 transition-colors"
             >
               <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
                 {stat.title}

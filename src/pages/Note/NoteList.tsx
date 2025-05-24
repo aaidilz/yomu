@@ -25,6 +25,10 @@ const NoteList: React.FC = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Note List | Yomu";
+  }, []);
+
   const fetchNotes = async () => {
     setLoading(true);
     try {
@@ -178,6 +182,7 @@ const NoteList: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {paginatedNotes.map((note) => (
                   <NoteItem
+                    key={note.id}
                     note={note}
                     onPreview={handlePreview}
                     onEdit={handleEdit}

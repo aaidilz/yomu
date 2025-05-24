@@ -1,9 +1,14 @@
 import WarningIcon from "@mui/icons-material/Warning";
 import { Typography } from "@mui/material";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 export default function NotFound() {
   const dots = [0, 0.2, 0.4];
+
+  useEffect(() => {
+    document.title = "Not Found 404 | Yomu";
+  }, []);
 
   return (
     <div
