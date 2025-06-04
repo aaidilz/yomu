@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Test from "./pages/Test";
 
 // Lazy-loaded components
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />} />
         <Route path="/feedback" element={<FeedBack />} />
+        <Route path="/test" element={<Test />} />
         {/* Public Routes */}
 
         {/* Protected Routes */}
