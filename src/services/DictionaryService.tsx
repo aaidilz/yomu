@@ -20,6 +20,8 @@ interface Dictionary {
   kategori: string;
 }
 
+const validCategories = ["Kata benda", "Kata sifat", "Slang", "Bisnis", "Umum"];
+
 class DictionaryService {
   private getUserDictionariesRef() {
     const user = auth.currentUser;
@@ -31,15 +33,19 @@ class DictionaryService {
     return collection(db, "users", user.uid, "dictionaries");
   }
 
-  async addDictionary(dictionaryData: Omit<Dictionary, "id">) {
-    const ref = this.getUserDictionariesRef();
-    if (!ref) throw new Error("User not authenticated");
-
-    return addDoc(ref, {
-      ...dictionaryData,
-      createdAt: Timestamp.now(),
-    });
+ async addDictionary(dictionaryData: Omit<Dictionary, "id">) {
+  if (!validCategories.includes(dictionaryData.kategori)) {
+    throw new Error(`Kategori tidak valid. Harus salah satu dari: ${validCategories.join(", ")}`);
   }
+
+  const ref = this.getUserDictionariesRef();
+  if (!ref) throw new Error("User not authenticated");
+
+  return addDoc(ref, {
+    ...dictionaryData,
+    createdAt: Timestamp.now(),
+  });
+}
 
   async getUserDictionaries(): Promise<Dictionary[]> {
     const ref = this.getUserDictionariesRef();

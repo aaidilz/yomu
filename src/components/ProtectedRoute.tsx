@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { ReactNode, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../configs/firebase-config";
 import Navbars from "./Navbar";
@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
   const [user, authLoading] = useAuthState(auth);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
-  
+
   // State untuk menyimpan percakapan
   const [chatHistory, setChatHistory] = useState<
     { role: "user" | "model"; text: string }[]
@@ -66,29 +66,29 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
 
       {/* Floating AI Chat Button */}
       <motion.button
-        onClick={() => setShowChat(true)}
+        onClick={() => setShowChat((prev) => !prev)}
         className="fixed bottom-6 right-6 bg-gradient-to-r from-gray-600 to-gray-600 hover:from-gray-700 hover:to-gray-700 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        <AssistantIcon/>
+        <AssistantIcon />
       </motion.button>
 
       {/* Chat Window */}
       <motion.div
         className="fixed bottom-24 right-6 w-96 h-[500px] shadow-2xl rounded-xl z-50 overflow-hidden border border-gray-00 flex flex-col"
         initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ 
-          opacity: showChat ? 1 : 0, 
+        animate={{
+          opacity: showChat ? 1 : 0,
           scale: showChat ? 1 : 0.8,
-          y: showChat ? 0 : 20
+          y: showChat ? 0 : 20,
         }}
-        style={{ 
+        style={{
           pointerEvents: showChat ? "auto" : "none",
-          display: showChat ? "flex" : "none"
+          display: showChat ? "flex" : "none",
         }}
       >
-        <ChatLLM 
+        <ChatLLM
           onClose={() => setShowChat(false)}
           chatHistory={chatHistory}
           setChatHistory={setChatHistory}
@@ -102,4 +102,4 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
   );
 };
 
-export default ProtectedRoute;
+export default memo(ProtectedRoute);
