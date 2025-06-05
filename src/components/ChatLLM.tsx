@@ -11,9 +11,6 @@ import DictionaryService from "../services/DictionaryService";
 const apiKey = import.meta.env.VITE_AI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
 
-// Prompt sistem (hanya dikirim ke AI, tidak disimpan di chatHistory)
-const systemPrompt = await fetch("/YukiPrompt.txt").then((res) => res.text());
-
 type ChatMessage = { role: "user" | "model" | "ai"; text: string };
 
 interface ChatLLMProps {
@@ -56,14 +53,24 @@ const ChatLLM = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isChatLoading]);
 
+  const [systemPrompt, setSystemPrompt] = useState<string>("");
+
+useEffect(() => {
+  fetch("/YukiPrompt.txt")
+    .then((res) => res.text())
+    .then(setSystemPrompt)
+    .catch(() => setSystemPrompt(""));
+}, []);
+
+
   // Build prompt correctly with system prompt + truncated history
-  const buildPrompt = (messages: ChatMessage[]): string => {
+  const buildPrompt = useCallback((messages: ChatMessage[]): string => {
     const last10Messages = messages.slice(-10);
     return [
       `System: ${systemPrompt}`,
       ...last10Messages.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.text}`)
     ].join('\n\n');
-  };
+  }, [systemPrompt]);
 
   const handleSend = useCallback(async () => {
     if (!chatInput.trim() || isChatLoading) return;
@@ -121,7 +128,7 @@ const ChatLLM = ({
     } finally {
       setChatLoading(false);
     }
-  }, [chatInput, isChatLoading, chatHistory, setChatInput, setChatLoading]);
+  }, [chatInput, isChatLoading, chatHistory, setChatInput, setChatLoading, buildPrompt]);
 
   const clearChat = () => {
     setChatHistory([]);
