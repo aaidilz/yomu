@@ -64,6 +64,7 @@ interface ChatLLMProps {
   setChatInput: (input: string) => void;
   isChatLoading: boolean;
   setChatLoading: (loading: boolean) => void;
+  mobileUI?: boolean;
 }
 
 const ChatLLM = ({
@@ -82,84 +83,89 @@ const ChatLLM = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isChatLoading]);
 
-const handleSend = useCallback(async () => {
-  if (!chatInput.trim() || isChatLoading) return;
+  const handleSend = useCallback(async () => {
+    if (!chatInput.trim() || isChatLoading) return;
 
-  // Langsung tambahkan pesan user ke history
-  const userMessage = { role: "user" as const, text: chatInput };
-  const newChatHistory = [...chatHistory, userMessage];
-  setChatHistory(newChatHistory);
-  setChatInput("");
-  setChatLoading(true);
+    // Langsung tambahkan pesan user ke history
+    const userMessage = { role: "user" as const, text: chatInput };
+    const newChatHistory = [...chatHistory, userMessage];
+    setChatHistory(newChatHistory);
+    setChatInput("");
+    setChatLoading(true);
 
-  try {
-    const limitedHistory = newChatHistory.slice(-10);
-
-    const fullPrompt = [
-      systemPrompt,
-      ...limitedHistory.map((m) =>
-        `${m.role === "user" ? "User" : "AI"}: ${m.text}`
-      ),
-    ].join("\n\n");
-
-    const result = await ai.models.generateContent({
-      model: "gemma-3-27b-it",
-      contents: fullPrompt,
-    });
-
-    const modelText =
-      result.candidates?.[0]?.content?.parts?.[0]?.text ?? "No response.";
-
-    const modelMessage = { role: "ai" as const, text: modelText };
-
-    // Coba parsing JSON dari modelText jika ada
-    let parsedDict = null;
     try {
-      const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
-      if (jsonMatch) {
-        parsedDict = JSON.parse(jsonMatch[0]);
-      }
-    } catch {
-      parsedDict = null;
-    }
+      const limitedHistory = newChatHistory.slice(-10);
 
-    if (parsedDict) {
+      const fullPrompt = [
+        systemPrompt,
+        ...limitedHistory.map(
+          (m) => `${m.role === "user" ? "User" : "AI"}: ${m.text}`
+        ),
+      ].join("\n\n");
+
+      const result = await ai.models.generateContent({
+        model: "gemma-3-27b-it",
+        contents: fullPrompt,
+      });
+
+      const modelText =
+        result.candidates?.[0]?.content?.parts?.[0]?.text ?? "No response.";
+
+      const modelMessage = { role: "ai" as const, text: modelText };
+
+      // Coba parsing JSON dari modelText jika ada
+      let parsedDict = null;
       try {
-        await DictionaryService.addDictionary(parsedDict);
-        setChatHistory([
-          ...newChatHistory,
-          modelMessage,
-          {
-            role: "ai",
-            text: "Yuki coba nambahkan data ya. Coba cek apakah sudah muncul.",
-          },
-        ]);
-      } catch (error) {
-        console.error("Gagal menyimpan dictionary:", error);
-        setChatHistory([
-          ...newChatHistory,
-          modelMessage,
-          {
-            role: "ai",
-            text: "Maaf, Yuki gagal menyimpan data dictionary.",
-          },
-        ]);
+        const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
+        if (jsonMatch) {
+          parsedDict = JSON.parse(jsonMatch[0]);
+        }
+      } catch {
+        parsedDict = null;
       }
-    } else {
-      setChatHistory([...newChatHistory, modelMessage]);
+
+      if (parsedDict) {
+        try {
+          await DictionaryService.addDictionary(parsedDict);
+          setChatHistory([
+            ...newChatHistory,
+            modelMessage,
+            {
+              role: "ai",
+              text: "Yuki coba nambahkan data ya. Coba cek apakah sudah muncul.",
+            },
+          ]);
+        } catch (error) {
+          console.error("Gagal menyimpan dictionary:", error);
+          setChatHistory([
+            ...newChatHistory,
+            modelMessage,
+            {
+              role: "ai",
+              text: "Maaf, Yuki gagal menyimpan data dictionary.",
+            },
+          ]);
+        }
+      } else {
+        setChatHistory([...newChatHistory, modelMessage]);
+      }
+    } catch (err) {
+      console.error("Error saat generate content:", err);
+      setChatHistory([
+        ...newChatHistory,
+        { role: "ai", text: "Maaf, terjadi kesalahan. Silakan coba lagi." },
+      ]);
+    } finally {
+      setChatLoading(false);
     }
-  } catch (err) {
-    console.error("Error saat generate content:", err);
-    setChatHistory([
-      ...newChatHistory,
-      { role: "ai", text: "Maaf, terjadi kesalahan. Silakan coba lagi." },
-    ]);
-  } finally {
-    setChatLoading(false);
-  }
-}, [chatInput, isChatLoading, chatHistory, setChatInput, setChatLoading, setChatHistory]);
-
-
+  }, [
+    chatInput,
+    isChatLoading,
+    chatHistory,
+    setChatInput,
+    setChatLoading,
+    setChatHistory,
+  ]);
 
   const clearChat = () => {
     setChatHistory([]);

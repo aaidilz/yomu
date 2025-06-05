@@ -10,9 +10,15 @@ const ChangeLog = () => {
 
   const changelogs = [
     {
+      version: "1.0.3",
+      date: "5 Juni 2025",
+      tag: "Current",
+      description:
+"- feature: **Implementasi AI Chat** untuk interaksi yang lebih baik dengan pengguna. 💬\n- Experimental: **Implementasi AI Dictionary** untuk membantu dalam pengelolaan data kamus."    },
+    {
       version: "1.0.2",
       date: "24 Mei 2025",
-      tag: "Current",
+      tag: "",
       description:
         "- Update: **Tampilan Home diperbarui** dengan desain baru & warna aksen yang disesuaikan. ✨ \n- BugFix: **Celah putih di sisi kanan** saat scrollbar disembunyikan telah diperbaiki. 🐞 \n- Feature: **Implementasi Autofill** pada entry data Dictionary \n- Adjust: **Penyesuaian tampilan** pada bagian penambahan entry data Dictionary. 🎨",
     },
