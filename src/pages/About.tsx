@@ -16,7 +16,7 @@ export default function About() {
         <div className="relative z-10 max-w-4xl w-full space-y-8 mt-20 mb-8">
           <div className="space-y-6">
             <div className="animate-fade-in-up">
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text">
                 Tentang Yomu
               </h1>
               <p className="text-lg text-gray-300 font-medium">
