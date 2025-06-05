@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { GoogleGenAI } from "@google/genai";
 import { motion } from "framer-motion";
 import SendIcon from "@mui/icons-material/Send";
@@ -12,47 +12,7 @@ const apiKey = import.meta.env.VITE_AI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
 
 // Prompt sistem (hanya dikirim ke AI, tidak disimpan di chatHistory)
-const systemPrompt = `
-Kamu adalah Yuki-chan, asisten belajar tentang bahasa Jepang, budaya Jepang, dan tempat-tempat menarik di Jepang. Yang paling utama adalah membantu user belajar bahasa Jepang dengan cara yang santai dan mudah dimengerti. 
-Kamu cuma akan menjawab pertanyaan yang berkaitan dengan tiga hal tersebut. Kalau ada yang di luar topik, kamu nggak akan jawab misalnya "maaf yuki...".
-
-Gunakan kata ganti “Yuki” secara natural, misalnya:
-- “Yuki bisa bantu…”
-- “Yuki gak tahu…”
-- “Yuki cuman bisa…”
-
-Batasi penggunaan emoji hanya jika sangat sesuai dan jangan terlalu sering supaya tetap fokus ke penjelasan.
-
-Jawabanmu singkat dan langsung ke inti, tanpa menambahkan kalimat penutup seperti 'Ada pertanyaan lain...' atau ajakan tanya lagi.
-Kalau kamu nggak tahu jawabannya, bilang “Maaf ya, Yuki gak tahu.” Tetap sopan ya!
-
----
-
-Yuki punya akses ke aplikasi Yomu, jadi Yuki bisa menambah data dictionary secara otomatis.  
-Tapi sebelum menambahkan, Yuki akan bertanya dulu ke user, misalnya:  
-“Apa kamu mau Yuki tambahkan data ini ke dictionary?”  
-
-Kalau user setuju, Yuki akan bilang:  
-“Yuki coba nambahkan data ya. Coba refresh ulang browsernya biar muncul”  
-
-Setelah itu, Yuki akan buat keluaran dalam format JSON seperti ini:
-
-{
-  "hiragana": "contoh hiragana",
-  "kanji": "contoh kanji",
-  "katakana": "contoh katakana", # opsional sesuai konteks, berikan "" kalau tidak ada
-  "romaji": "contoh romaji",
-  "arti": "arti kata atau kalimat",
-  "kategori": "Kata benda | Kata sifat | Slang | Bisnis | Umum"
-}
-
-Pastikan kategori hanya salah satu dari pilihan tersebut.  
-Kalau bukan permintaan jelas untuk membuat data dictionary, Yuki tidak akan buat JSON.  
-
-Ini supaya aplikasi Yomu bisa langsung menyimpan data tersebut otomatis.
-
-
-`;
+const systemPrompt = await fetch("/YukiPrompt.txt").then((res) => res.text());
 
 type ChatMessage = { role: "user" | "model" | "ai"; text: string };
 
@@ -69,8 +29,6 @@ interface ChatLLMProps {
 
 const ChatLLM = ({
   onClose,
-  chatHistory,
-  setChatHistory,
   chatInput,
   setChatInput,
   isChatLoading,
@@ -78,98 +36,97 @@ const ChatLLM = ({
 }: ChatLLMProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  // Load chatHistory dari localStorage saat mount
+  useEffect(() => {
+    const saved = localStorage.getItem("chatHistory");
+    if (saved) {
+      setChatHistory(JSON.parse(saved));
+    }
+  }, []);
+
+  // Simpan chatHistory ke localStorage setiap ada perubahan
+  useEffect(() => {
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  }, [chatHistory]);
+
   // Auto-scroll ke pesan terbaru
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isChatLoading]);
 
+  // Build prompt correctly with system prompt + truncated history
+  const buildPrompt = (messages: ChatMessage[]): string => {
+    const last10Messages = messages.slice(-10);
+    return [
+      `System: ${systemPrompt}`,
+      ...last10Messages.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.text}`)
+    ].join('\n\n');
+  };
+
   const handleSend = useCallback(async () => {
     if (!chatInput.trim() || isChatLoading) return;
 
-    // Langsung tambahkan pesan user ke history
-    const userMessage = { role: "user" as const, text: chatInput };
-    const newChatHistory = [...chatHistory, userMessage];
-    setChatHistory(newChatHistory);
+    const userMessage: ChatMessage = { role: "user", text: chatInput };
+    const updatedHistory = [...chatHistory, userMessage];
+    
+    setChatHistory(updatedHistory);
     setChatInput("");
     setChatLoading(true);
 
     try {
-      const limitedHistory = newChatHistory.slice(-10);
-
-      const fullPrompt = [
-        systemPrompt,
-        ...limitedHistory.map(
-          (m) => `${m.role === "user" ? "User" : "AI"}: ${m.text}`
-        ),
-      ].join("\n\n");
-
+      const prompt = buildPrompt(updatedHistory);
+      
       const result = await ai.models.generateContent({
         model: "gemma-3-27b-it",
-        contents: fullPrompt,
+        contents: prompt,
       });
 
-      const modelText =
-        result.candidates?.[0]?.content?.parts?.[0]?.text ?? "No response.";
+      const modelText = result.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+      const modelMessage: ChatMessage = { role: "ai", text: modelText };
 
-      const modelMessage = { role: "ai" as const, text: modelText };
+      // Add original AI response to history FIRST
+      const historyWithAIReply = [...updatedHistory, modelMessage];
+      setChatHistory(historyWithAIReply);
 
-      // Coba parsing JSON dari modelText jika ada
-      let parsedDict = null;
-      try {
-        const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
-        if (jsonMatch) {
-          parsedDict = JSON.parse(jsonMatch[0]);
-        }
-      } catch {
-        parsedDict = null;
-      }
-
-      if (parsedDict) {
+      // Check for dictionary pattern
+      const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
+      if (jsonMatch) {
         try {
+          const parsedDict = JSON.parse(jsonMatch[0]);
           await DictionaryService.addDictionary(parsedDict);
-          setChatHistory([
-            ...newChatHistory,
-            modelMessage,
-            {
-              role: "ai",
-              text: "Yuki coba nambahkan data ya. Coba cek apakah sudah muncul.",
-            },
-          ]);
+          
+          // Add confirmation as SEPARATE message
+          const confirmationMessage: ChatMessage = {
+            role: "ai",
+            text: "✅ Yuki udah tambahin data itu ke dictionary! Coba cek di halaman dictionary ya~"
+          };
+          setChatHistory([...historyWithAIReply, confirmationMessage]);
         } catch (error) {
-          console.error("Gagal menyimpan dictionary:", error);
-          setChatHistory([
-            ...newChatHistory,
-            modelMessage,
-            {
-              role: "ai",
-              text: "Maaf, Yuki gagal menyimpan data dictionary.",
-            },
-          ]);
+          console.error("Dictionary save error:", error);
+          const errorMessage: ChatMessage = {
+            role: "ai",
+            text: "❌ Gagal menyimpan dictionary. Coba cek format datanya ya!"
+          };
+          setChatHistory([...historyWithAIReply, errorMessage]);
         }
-      } else {
-        setChatHistory([...newChatHistory, modelMessage]);
       }
     } catch (err) {
-      console.error("Error saat generate content:", err);
+      console.error("API error:", err);
       setChatHistory([
-        ...newChatHistory,
-        { role: "ai", text: "Maaf, terjadi kesalahan. Silakan coba lagi." },
+        ...updatedHistory,
+        { role: "ai", text: "⚠️ Maaf, Yuki lagi error nih. Coba lagi ya?" }
       ]);
     } finally {
       setChatLoading(false);
     }
-  }, [
-    chatInput,
-    isChatLoading,
-    chatHistory,
-    setChatInput,
-    setChatLoading,
-    setChatHistory,
-  ]);
+  }, [chatInput, isChatLoading, chatHistory, setChatInput, setChatLoading]);
 
   const clearChat = () => {
     setChatHistory([]);
     setChatInput("");
+    localStorage.removeItem("chatHistory");
   };
 
   return (
@@ -211,32 +168,42 @@ const ChatLLM = ({
           </div>
         )}
 
-        {chatHistory.map((msg, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex ${
-              msg.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
-                msg.role === "user"
-                  ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none"
-                  : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
-              } shadow-sm`}
+        {chatHistory
+          .filter((msg) => {
+            // sembunyikan pesan JSON (dictionary output)
+            try {
+              JSON.parse(msg.text);
+              return false;
+            } catch {
+              return true;
+            }
+          })
+          .map((msg, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
             >
-              <MDEditor.Markdown
-                source={msg.text}
-                style={{
-                  backgroundColor: "transparent",
-                  color: msg.role === "user" ? "white" : "inherit",
-                }}
-              />
-            </div>
-          </motion.div>
-        ))}
+              <div
+                className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                  msg.role === "user"
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none"
+                    : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
+                } shadow-sm`}
+              >
+                <MDEditor.Markdown
+                  source={msg.text}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: msg.role === "user" ? "white" : "inherit",
+                  }}
+                />
+              </div>
+            </motion.div>
+          ))}
 
         {isChatLoading && (
           <div className="flex justify-start">
