@@ -33,19 +33,33 @@ class DictionaryService {
     return collection(db, "users", user.uid, "dictionaries");
   }
 
- async addDictionary(dictionaryData: Omit<Dictionary, "id">) {
-  if (!validCategories.includes(dictionaryData.kategori)) {
-    throw new Error(`Kategori tidak valid. Harus salah satu dari: ${validCategories.join(", ")}`);
+  async addDictionary(dictionaryData: Omit<Dictionary, "id">) {
+    if (!validCategories.includes(dictionaryData.kategori)) {
+      throw new Error(
+        `Kategori tidak valid. Harus salah satu dari: ${validCategories.join(
+          ", "
+        )}`
+      );
+    }
+
+    const ref = this.getUserDictionariesRef();
+    if (!ref) throw new Error("User not authenticated");
+
+    // Check for duplicates based on Kanji
+    const snapshot = await getDocs(ref);
+    const isDuplicate = snapshot.docs.some(
+      (doc) => doc.data().kanji === dictionaryData.kanji
+    );
+
+    if (isDuplicate) {
+      throw new Error("Dictionary with the same Kanji already exists.");
+    }
+
+    return addDoc(ref, {
+      ...dictionaryData,
+      createdAt: Timestamp.now(),
+    });
   }
-
-  const ref = this.getUserDictionariesRef();
-  if (!ref) throw new Error("User not authenticated");
-
-  return addDoc(ref, {
-    ...dictionaryData,
-    createdAt: Timestamp.now(),
-  });
-}
 
   async getUserDictionaries(): Promise<Dictionary[]> {
     const ref = this.getUserDictionariesRef();

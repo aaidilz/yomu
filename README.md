@@ -16,6 +16,9 @@ VITE_STORAGE_BUCKET = "value"
 VITE_MESSAGING_SENDER_ID = "value"
 VITE_APP_ID = "value"
 VITE_MEASUREMENT_ID = "value"
+
+#Gimini API
+VITE_AI_API_KEY "value"
 ```
 
 Ganti nilai di atas dengan kredensial Firebase milikmu.
