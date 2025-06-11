@@ -10,11 +10,18 @@ const ChangeLog = () => {
 
   const changelogs = [
     {
-      version: "1.0.3",
-      date: "5 Juni 2025",
+      version: "1.1.1",
+      date: "11 Juni 2025",
       tag: "Current",
+      description: "- **Feature** Penambahan Dictionary dan Catatan oleh Chat AI - **Yuki chan**",
+    },    
+    {
+      version: "1.1.0",
+      date: "5 Juni 2025",
+      tag: "Experimental",
       description:
-"- feature: **Implementasi AI Chat** untuk interaksi yang lebih baik dengan pengguna. 💬\n- Experimental: **Implementasi AI Dictionary** untuk membantu dalam pengelolaan data kamus."    },
+        "- feature: **Implementasi AI Chat** untuk interaksi yang lebih baik dengan pengguna. 💬\n- Experimental: **Implementasi AI Dictionary** untuk membantu dalam pengelolaan data kamus.",
+    },
     {
       version: "1.0.2",
       date: "24 Mei 2025",
