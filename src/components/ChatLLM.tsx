@@ -6,7 +6,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import MDEditor from "@uiw/react-md-editor";
-import DictionaryService from "../services/DictionaryService";
+import handleDictionaryIfAny from "./util/handleDictionaryIfAny";
+import handleNoteIfAny from "./util/handleNoteIfAny";
 
 const apiKey = import.meta.env.VITE_AI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
@@ -55,81 +56,97 @@ const ChatLLM = ({
 
   const [systemPrompt, setSystemPrompt] = useState<string>("");
 
-useEffect(() => {
-  fetch("/YukiPrompt.txt")
-    .then((res) => res.text())
-    .then(setSystemPrompt)
-    .catch(() => setSystemPrompt(""));
-}, []);
-
+  useEffect(() => {
+    fetch("/YukiPrompt.txt")
+      .then((res) => res.text())
+      .then(setSystemPrompt)
+      .catch(() => setSystemPrompt(""));
+  }, []);
 
   // Build prompt correctly with system prompt + truncated history
-  const buildPrompt = useCallback((messages: ChatMessage[]): string => {
-    const last10Messages = messages.slice(-10);
-    return [
-      `System: ${systemPrompt}`,
-      ...last10Messages.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.text}`)
-    ].join('\n\n');
-  }, [systemPrompt]);
+  const buildPrompt = useCallback(
+    (messages: ChatMessage[]): string => {
+      const last10Messages = messages.slice(-10);
+      return [
+        `System: ${systemPrompt}`,
+        ...last10Messages.map(
+          (m) => `${m.role === "user" ? "User" : "AI"}: ${m.text}`
+        ),
+      ].join("\n\n");
+    },
+    [systemPrompt]
+  );
 
   const handleSend = useCallback(async () => {
     if (!chatInput.trim() || isChatLoading) return;
 
     const userMessage: ChatMessage = { role: "user", text: chatInput };
     const updatedHistory = [...chatHistory, userMessage];
-    
+
     setChatHistory(updatedHistory);
     setChatInput("");
     setChatLoading(true);
 
     try {
       const prompt = buildPrompt(updatedHistory);
-      
+
       const result = await ai.models.generateContent({
         model: "gemma-3-27b-it",
         contents: prompt,
       });
 
-      const modelText = result.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+      const modelText =
+        result.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
       const modelMessage: ChatMessage = { role: "ai", text: modelText };
 
-      // Add original AI response to history FIRST
-      const historyWithAIReply = [...updatedHistory, modelMessage];
-      setChatHistory(historyWithAIReply);
+      let newHistory = [...updatedHistory, modelMessage];
+      setChatHistory(newHistory);
 
-      // Check for dictionary pattern
+      // Coba ekstrak JSON dari respons model
       const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
+      let parsed;
       if (jsonMatch) {
         try {
-          const parsedDict = JSON.parse(jsonMatch[0]);
-          await DictionaryService.addDictionary(parsedDict);
-          
-          // Add confirmation as SEPARATE message
-          const confirmationMessage: ChatMessage = {
-            role: "ai",
-            text: "✅ Yuki udah tambahin data itu ke dictionary! Coba cek di halaman dictionary ya~"
-          };
-          setChatHistory([...historyWithAIReply, confirmationMessage]);
-        } catch (error) {
-          console.error("Dictionary save error:", error);
-          const errorMessage: ChatMessage = {
-            role: "ai",
-            text: "❌ Gagal menyimpan dictionary. Coba cek format datanya ya!"
-          };
-          setChatHistory([...historyWithAIReply, errorMessage]);
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch (err) {
+          // Jika JSON-nya invalid, lanjutkan seperti biasa
+          console.warn("Gagal parse JSON:", err);
+        }
+      }
+
+      // Jika berisi title dan content, jalankan handleNoteIfAny
+      if (parsed && parsed.title && parsed.content) {
+        const noteResult = await handleNoteIfAny(modelText, newHistory);
+        if (noteResult.newHistory.length > newHistory.length) {
+          newHistory = noteResult.newHistory;
+          setChatHistory(newHistory);
+        }
+      } else if (parsed) {
+        // Jika bukan note, tapi JSON valid, coba simpan sebagai dictionary
+        const dictResult = await handleDictionaryIfAny(modelText, newHistory);
+        if (dictResult.newHistory.length > newHistory.length) {
+          newHistory = dictResult.newHistory;
+          setChatHistory(newHistory);
         }
       }
     } catch (err) {
       console.error("API error:", err);
       setChatHistory([
         ...updatedHistory,
-        { role: "ai", text: "⚠️ Maaf, Yuki lagi error nih. Coba lagi ya?" }
+        { role: "ai", text: "⚠️ Maaf, Yuki lagi error nih. Coba lagi ya?" },
       ]);
     } finally {
       setChatLoading(false);
     }
-  }, [chatInput, isChatLoading, chatHistory, setChatInput, setChatLoading, buildPrompt]);
-
+  }, [
+    chatInput,
+    isChatLoading,
+    chatHistory,
+    setChatInput,
+    setChatLoading,
+    buildPrompt,
+  ]);
+  
   const clearChat = () => {
     setChatHistory([]);
     setChatInput("");
