@@ -91,7 +91,7 @@ const ChatLLM = ({
       const prompt = buildPrompt(updatedHistory);
 
       const result = await ai.models.generateContent({
-        model: "gemma-3-27b-it",
+        model: "gemma-3n-e4b-it",
         contents: prompt,
       });
 
