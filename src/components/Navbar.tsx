@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../configs/firebase-config";
 import AuthService from "../services/AuthService";
 import { Logout, Settings } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 export default function Navbars() {
   const [user] = useAuthState(auth);
@@ -99,7 +100,10 @@ export default function Navbars() {
               Feedback
             </Link>
 
-            <Menu as="div" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:relative">
+            <Menu
+              as="div"
+              className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
+            >
               <MenuButton className="flex items-center space-x-2 group">
                 {user?.photoURL && (
                   <img
@@ -124,7 +128,7 @@ export default function Navbars() {
                   <MenuItem>
                     {({ active }) => (
                       <Link
-                        to="/settings"
+                        to="/user-setting"
                         className={`flex items-center px-4 py-2 ${
                           active ? "bg-[#001011] text-[#64E9EE]" : ""
                         }`}
@@ -138,13 +142,28 @@ export default function Navbars() {
                   <MenuItem>
                     {({ active }) => (
                       <button
-                        onClick={() => AuthService.logout()}
-                        className={`w-full text-left px-4 py-2 ${
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Yakin ingin keluar?",
+                            text: "Kamu akan keluar dari akun ini.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            background: "#0f172a",
+                            color: "#fff",
+                            confirmButtonText: "Ya, Keluar",
+                            cancelButtonText: "Batal",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              AuthService.logout();
+                            }
+                          });
+                        }}
+                        className={`flex items-center px-4 py-2 w-full text-left ${
                           active ? "bg-[#001011] text-[#64E9EE]" : ""
                         }`}
                       >
                         <Logout className="w-5 h-5 mr-2" />
-                        Logout
+                        Log Out
                       </button>
                     )}
                   </MenuItem>

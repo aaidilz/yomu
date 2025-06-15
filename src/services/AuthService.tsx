@@ -11,7 +11,7 @@ import { collection, doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 const usersCollection = collection(db, "users");
 
 class AuthService {
-  // 🟢 Login dengan Google SSO
+  // Login dengan Google SSO
   async signInWithGoogle() {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
@@ -26,7 +26,7 @@ class AuthService {
     );
   }
 
-  // 🟢 Login dengan Email & Password
+  // Login dengan Email & Password
   async signInWithEmail(email: string, password: string) {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
@@ -41,7 +41,7 @@ class AuthService {
     );
   }
 
-  // 🟢 Register dengan Email & Password
+  // Register dengan Email & Password
   async registerWithEmail(name: string, email: string, password: string) {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
@@ -50,12 +50,12 @@ class AuthService {
     await this.saveUserData(user.uid, name, email, "", "email");
   }
 
-  // 🔴 Logout User
+  // Logout User
   async logout() {
     return signOut(auth);
   }
 
-  // 🟢 Simpan Data User ke Firestore
+  // Simpan Data User ke Firestore
   async saveUserData(
     uid: string,
     name: string,
@@ -74,6 +74,21 @@ class AuthService {
         provider,
         createdAt: Timestamp.now(),
       });
+    }
+  }
+
+  async getCurrentUserData() {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently logged in");
+    }
+    const userDocRef = doc(usersCollection, currentUser.uid);
+    const snapshot = await getDoc(userDocRef);
+
+    if (snapshot.exists()) {
+      return snapshot.data();
+    } else {
+      throw new Error("User data not found in Firestore");
     }
   }
 }

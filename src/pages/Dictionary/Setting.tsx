@@ -7,8 +7,8 @@ const Setting = () => {
   const [dictionaryCount, setDictionaryCount] = useState<number | null>(null);
 
   useEffect(() => {
-      document.title = "Dictionary Setting | Yomu";
-    }, []);
+    document.title = "Dictionary Setting | Yomu";
+  }, []);
 
   // Ambil jumlah dictionaries saat komponen dimuat
   useEffect(() => {
@@ -100,28 +100,17 @@ const Setting = () => {
     reader.readAsText(selectedFile);
   };
 
-  const deleteAllDictionaries = async () => {
-    try {
-      await DictionaryService.deleteAllDictionaries();
-      alert("Berhasil menghapus semua dictionaries.");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting all dictionaries:", error);
-      alert("Gagal menghapus semua dictionaries.");
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4 text-[#97C8EB]">
       <div className="w-full max-w-2xl">
-        <div className="bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 border border-[#64E9EE]/20">
-          <h2 className="text-3xl font-bold text-center mb-6 text-[#64E9EE]">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-[#97C8EB]/20">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
             Settings
           </h2>
 
           {/* Dictionary Count */}
           <div className="text-center mb-8">
-            <p className="text-[#97C8EB] text-lg">
+            <p className="text-lg md:text-xl">
               {dictionaryCount !== null ? (
                 <>
                   Total Dictionaries:
@@ -130,28 +119,25 @@ const Setting = () => {
                   </span>
                 </>
               ) : (
-                <span className="text-[#97C8EB]">Loading...</span>
+                <span className="text-[#97C8EB]/80">Loading...</span>
               )}
             </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* File Upload Section */}
             <div className="space-y-4">
-              <label className="block text-[#97C8EB] text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Pilih File
               </label>
-              <div className="flex items-center">
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleFileSelect}
-                  disabled={uploading}
-                  className="block w-full text-sm text-[#97C8EB] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#13AAFB] file:text-white hover:file:bg-[#0F8AC4] transition-colors"
-                />
-              </div>
-
-              <p className="text-[#97C8EB]/80 text-sm">
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleFileSelect}
+                disabled={uploading}
+                className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-medium file:bg-[#97C8EB] file:text-gray-900 hover:file:bg-[#78b2d9] transition-colors"
+              />
+              <p className="text-sm text-[#97C8EB]/80">
                 Supported formats: .json
               </p>
 
@@ -180,10 +166,10 @@ const Setting = () => {
               <button
                 onClick={importDictionaryJson}
                 disabled={uploading || !selectedFile}
-                className={`w-full py-3 px-6 rounded-xl font-mediu transition-all ${
+                className={`w-full py-3 px-6 rounded-xl font-medium transition-all ${
                   uploading || !selectedFile
-                    ? "bg-gray-700/75 cursor-not-allowed text-[#64E9EE]"
-                    : "bg-[#64E9EE] hover:bg-[#0F8AC4] hover:shadow-lg"
+                    ? "bg-gray-700/50 text-[#97C8EB] cursor-not-allowed"
+                    : "bg-[#97C8EB] text-gray-900 hover:bg-[#78b2d9] hover:shadow-lg"
                 }`}
               >
                 {uploading ? (
@@ -216,24 +202,9 @@ const Setting = () => {
 
               <button
                 onClick={exportDictionaryJson}
-                className="w-full py-3 px-6 rounded-xl font-medium text-[#64E9EE] border-2 border-[#64E9EE] hover:bg-[#64E9EE]/10 transition-all hover:shadow-lg"
+                className="w-full py-3 px-6 rounded-xl font-medium text-[#97C8EB] border-2 border-[#97C8EB] hover:bg-[#97C8EB]/10 transition-all hover:shadow-lg"
               >
                 Export Data
-              </button>
-              <button
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Apakah Anda yakin ingin menghapus semua dictionaries?"
-                    )
-                  ) {
-                    deleteAllDictionaries();
-                  }
-                }}
-                className="w-full py-3 px-6 rounded-xl font-medium bg-[#001011]/80 backdrop-blur-sm border border-[#64E9EE]/20
-                        hover:bg-[#093A3E]/90 text-[#ff0000] transition-all hover:shadow-lg"
-              >
-                Reset Data
               </button>
             </div>
           </div>

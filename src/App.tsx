@@ -10,6 +10,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Home = lazy(() => import("./pages/Home"));
 const FeedBack = lazy(() => import("./pages/FeedBack"));
 const About = lazy(() => import("./pages/About"));
+const UserSetting = lazy(() => import("./pages/Usersetting"));
 
 // dictionary
 const Dictionary = lazy(() => import("./pages/Dictionary/Dictionary"));
@@ -49,6 +50,16 @@ const App = () => {
             <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            </div>
+          }
+        />
+        <Route
+          path="/user-setting"
+          element={
+            <div className="bg-gray-900 min-h-screen w-full overflow-x-hidden">
+              <ProtectedRoute>
+                <UserSetting />
               </ProtectedRoute>
             </div>
           }
