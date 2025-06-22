@@ -37,3 +37,6 @@ Jangan ragu untuk membuka issue jika menemukan bug atau punya saran fitur!
 ini cuman sebuah project sederhana yang menggunakan firebase sebagai database untuk menyimpan data dictionary. Project ini dibuat menggunakan *React*
 
 project ini cuman dibuat karena gabut :)
+
+## MIT LICENCE
+This project is licensed under the [MIT License](LICENSE).
