@@ -6,6 +6,8 @@ import DictionaryService from "../services/DictionaryService";
 import NoteService from "../services/NoteService";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import ThemeSwitchComponent from "../components/ThemeSwitch";
+import ThemeDebugComponent from "../components/ThemeDebugComponent";
 
 export default function Usersetting() {
   const [user] = useAuthState(auth);
@@ -47,7 +49,7 @@ export default function Usersetting() {
   }, [user]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-8 text-white mt-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-8 mt-8" style={{ color: "var(--color-text-primary)" }}>
       <div className="flex flex-col md:flex-row w-full max-w-4xl gap-10">
         {/* Kiri: Foto dan Nama */}
         <div className="md:w-1/3 flex flex-col items-center text-center">
@@ -55,33 +57,41 @@ export default function Usersetting() {
             <img
               src={user.photoURL}
               alt="User Profile"
-              className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-[#97C8EB]"
+              className="w-32 h-32 rounded-full object-cover mb-4 border-4"
+              style={{ borderColor: "var(--color-primary)" }}
             />
           ) : (
-            <div className="w-32 h-32 rounded-full bg-gray-700 mb-4 border-4 border-[#97C8EB]" />
+            <div 
+              className="w-32 h-32 rounded-full mb-4 border-4" 
+              style={{ 
+                backgroundColor: "var(--color-bg-secondary)", 
+                borderColor: "var(--color-primary)" 
+              }} 
+            />
           )}
-          <h2 className="text-2xl font-semibold text-[#97C8EB]">
+          <h2 className="text-2xl font-semibold" style={{ color: "var(--color-primary)" }}>
             {user?.displayName || "Unknown User"}
           </h2>
-          <p className="text-gray-400">{user?.email || "No email"}</p>
+          <p style={{ color: "var(--color-text-secondary)" }}>{user?.email || "No email"}</p>
 
-          <p className="text-xs text-gray-500 mt-2 break-all">
+          <p className="text-xs mt-2 break-all" style={{ color: "var(--color-text-secondary)" }}>
             UID: {user?.uid || "No UID"}
           </p>
         </div>
 
         {/* Kanan: Dua container */}
         <div className="md:w-2/3 flex flex-col gap-6">
-          <div className="p-6 rounded-2xl border border-gray-700">
-            <h3 className="text-xl font-semibold mb-2 text-[#97C8EB]">
+          <div className="p-6 rounded-2xl border" style={{ borderColor: "var(--color-border)" }}>
+            <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--color-primary)" }}>
               Preferences
             </h3>
             <p className="text-gray-400">
               Manage your preferences, theme, and notifications.
             </p>
-            {/* coming soon :) */}
+            {/* Theme Switch */}
             <div className="mt-4">
-              <p className="text-gray-500">Fungsi ini bakal Coming soon :)</p>
+              <ThemeSwitchComponent />
+              <ThemeDebugComponent />
             </div>
           </div>
 

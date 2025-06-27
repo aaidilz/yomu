@@ -1,8 +1,30 @@
 @import "tailwindcss";
 
+/* Theme Variables */
+:root {
+  --color-primary: #97C8EB;
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #9ca3af;
+  --color-border: #374151;
+}
+
+[data-theme="light"] {
+  --color-primary: #2563eb;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-border: #e2e8f0;
+}
+
 html, body {
   overflow-x: hidden !important;
   padding-right: 0 !important;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .w-md-editor-toolbar {
