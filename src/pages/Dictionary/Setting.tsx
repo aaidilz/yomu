@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import DictionaryService from "../../services/DictionaryService";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Setting = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dictionaryCount, setDictionaryCount] = useState<number | null>(null);
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   useEffect(() => {
     document.title = "Dictionary Setting | Yomu";
@@ -101,10 +104,18 @@ const Setting = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4 text-[#97C8EB]">
+    <div className={`min-h-screen flex items-center justify-center p-4 ${
+      isLightMode ? 'bg-gray-50 text-gray-800' : 'bg-gray-900 text-[#97C8EB]'
+    }`}>
       <div className="w-full max-w-2xl">
-        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-[#97C8EB]/20">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+        <div className={`rounded-2xl shadow-xl p-6 md:p-8 border ${
+          isLightMode 
+            ? 'bg-white border-gray-200' 
+            : 'bg-gray-800 border-[#97C8EB]/20'
+        }`}>
+          <h2 className={`text-3xl md:text-4xl font-bold text-center mb-8 ${
+            isLightMode ? 'text-blue-600' : 'text-[#97C8EB]'
+          }`}>
             Settings
           </h2>
 
@@ -114,12 +125,14 @@ const Setting = () => {
               {dictionaryCount !== null ? (
                 <>
                   Total Dictionaries:
-                  <span className="text-[#64E9EE] font-bold ml-2">
+                  <span className={`font-bold ml-2 ${
+                    isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'
+                  }`}>
                     {dictionaryCount}
                   </span>
                 </>
               ) : (
-                <span className="text-[#97C8EB]/80">Loading...</span>
+                <span className={isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/80'}>Loading...</span>
               )}
             </p>
           </div>
@@ -135,14 +148,20 @@ const Setting = () => {
                 accept=".json"
                 onChange={handleFileSelect}
                 disabled={uploading}
-                className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-medium file:bg-[#97C8EB] file:text-gray-900 hover:file:bg-[#78b2d9] transition-colors"
+                className={`block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-medium transition-colors ${
+                  isLightMode
+                    ? 'file:bg-blue-600 file:text-white hover:file:bg-blue-700'
+                    : 'file:bg-[#97C8EB] file:text-gray-900 hover:file:bg-[#78b2d9]'
+                }`}
               />
-              <p className="text-sm text-[#97C8EB]/80">
+              <p className={`text-sm ${isLightMode ? 'text-gray-500' : 'text-[#97C8EB]/80'}`}>
                 Supported formats: .json
               </p>
 
               {selectedFile && (
-                <p className="text-[#64E9EE] text-sm flex items-center">
+                <p className={`text-sm flex items-center ${
+                  isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'
+                }`}>
                   <svg
                     className="w-5 h-5 mr-2"
                     fill="none"
@@ -168,8 +187,12 @@ const Setting = () => {
                 disabled={uploading || !selectedFile}
                 className={`w-full py-3 px-6 rounded-xl font-medium transition-all ${
                   uploading || !selectedFile
-                    ? "bg-gray-700/50 text-[#97C8EB] cursor-not-allowed"
-                    : "bg-[#97C8EB] text-gray-900 hover:bg-[#78b2d9] hover:shadow-lg"
+                    ? (isLightMode 
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-gray-700/50 text-[#97C8EB] cursor-not-allowed")
+                    : (isLightMode
+                        ? "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
+                        : "bg-[#97C8EB] text-gray-900 hover:bg-[#78b2d9] hover:shadow-lg")
                 }`}
               >
                 {uploading ? (
@@ -202,7 +225,11 @@ const Setting = () => {
 
               <button
                 onClick={exportDictionaryJson}
-                className="w-full py-3 px-6 rounded-xl font-medium text-[#97C8EB] border-2 border-[#97C8EB] hover:bg-[#97C8EB]/10 transition-all hover:shadow-lg"
+                className={`w-full py-3 px-6 rounded-xl font-medium border-2 transition-all hover:shadow-lg ${
+                  isLightMode
+                    ? 'text-blue-600 border-blue-600 hover:bg-blue-50'
+                    : 'text-[#97C8EB] border-[#97C8EB] hover:bg-[#97C8EB]/10'
+                }`}
               >
                 Export Data
               </button>

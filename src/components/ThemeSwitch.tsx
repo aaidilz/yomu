@@ -5,7 +5,6 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-// Styled Switch untuk tema dark/light
 const ThemeSwitch = styled(Switch)(({ checked }) => ({
   width: 62,
   height: 34,

@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Loop, Settings, Visibility } from "@mui/icons-material";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 interface Note {
   id: string;
@@ -28,26 +29,43 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
     loadingEditId,
     loadingPreviewId,
   }) => {
+    const { themeMode } = useTheme();
+    const isLightMode = themeMode === "light";
+
     return (
       <motion.div
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-gray-800 rounded-xl p-4 border border-[#64E9EE]/20 shadow-lg hover:shadow-2xl transition-shadow min-h-[240px]"
+        className={`rounded-xl p-4 border shadow-lg hover:shadow-2xl transition-shadow min-h-[240px] ${
+          isLightMode 
+            ? 'bg-white border-gray-200' 
+            : 'bg-gray-800 border-[#64E9EE]/20'
+        }`}
       >
         <div className="flex flex-col h-full justify-between">
           <div className="flex flex-col space-y-2">
-            <h2 className="text-xl font-bold text-[#64E9EE]">{note.title}</h2>
-            <p className="text-white text-sm whitespace-pre-wrap line-clamp-4">
+            <h2 className={`text-xl font-bold ${
+              isLightMode ? 'text-normal' : 'text-[#64E9EE]'
+            }`}>{note.title}</h2>
+            <p className={`text-sm whitespace-pre-wrap line-clamp-4 ${
+              isLightMode ? 'text-gray-700' : 'text-white'
+            }`}>
               {note.content}
             </p>
           </div>
-          <div className="flex justify-end space-x-2 mt-4 pt-4 border-t border-[#64E9EE]/20">
+          <div className={`flex justify-end space-x-2 mt-4 pt-4 border-t ${
+            isLightMode ? 'border-gray-200' : 'border-[#64E9EE]/20'
+          }`}>
             <button
               onClick={() => onPreview(note.id)}
               disabled={loadingPreviewId === note.id}
-              className="text-[#64E9EE] hover:text-white transition disabled:opacity-50"
+              className={`transition disabled:opacity-50 ${
+                isLightMode 
+                  ? 'text-blue-600 hover:text-blue-800' 
+                  : 'text-[#64E9EE] hover:text-white'
+              }`}
               title="Preview"
             >
               {loadingPreviewId === note.id ? (
@@ -64,7 +82,11 @@ const NoteItem: React.FC<NoteItemProps> = React.memo(
             <button
               onClick={() => onEdit(note.id)}
               disabled={loadingEditId === note.id}
-              className="text-[#64E9EE] hover:text-white transition disabled:opacity-50"
+              className={`transition disabled:opacity-50 ${
+                isLightMode 
+                  ? 'text-blue-600 hover:text-blue-800' 
+                  : 'text-[#64E9EE] hover:text-white'
+              }`}
               title="Edit"
             >
               {loadingEditId === note.id ? (

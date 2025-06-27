@@ -51,7 +51,7 @@ const App = () => {
           <Route
             path="/home"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <Home />
                 </ProtectedRoute>
@@ -61,7 +61,7 @@ const App = () => {
           <Route
             path="/user-setting"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <UserSetting />
                 </ProtectedRoute>
@@ -71,7 +71,7 @@ const App = () => {
           <Route
             path="/dictionary"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <Dictionary />
                 </ProtectedRoute>
@@ -81,7 +81,7 @@ const App = () => {
           <Route
             path="/dictionary/new"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <DictionaryCreate />
                 </ProtectedRoute>
@@ -91,7 +91,7 @@ const App = () => {
           <Route
             path="/dictionary/edit/:id"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <DictionaryEdit />
                 </ProtectedRoute>
@@ -101,7 +101,7 @@ const App = () => {
           <Route
             path="/dictionary/setting"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <Setting />
                 </ProtectedRoute>
@@ -111,7 +111,7 @@ const App = () => {
           <Route
             path="/games-flashcard"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <GamesFlashcard />
                 </ProtectedRoute>
@@ -121,7 +121,7 @@ const App = () => {
           <Route
             path="/games-quiz"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <GamesQuiz />
                 </ProtectedRoute>
@@ -131,7 +131,7 @@ const App = () => {
           <Route
             path="/note"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <NoteList />
                 </ProtectedRoute>
@@ -141,7 +141,7 @@ const App = () => {
           <Route
             path="/note/new"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <NoteEditor />
                 </ProtectedRoute>
@@ -151,7 +151,7 @@ const App = () => {
           <Route
             path="/note/edit/:id"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <NoteEditor />
                 </ProtectedRoute>
@@ -161,7 +161,7 @@ const App = () => {
           <Route
             path="/note/:id"
             element={
-              <div className="min-h-screen w-full overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+              <div className="min-h-screen w-full overflow-x-hidden">
                 <ProtectedRoute>
                   <NotePreview />
                 </ProtectedRoute>

@@ -9,6 +9,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Box, Switch, Typography } from "@mui/material";
 import * as wanakana from "wanakana";
+import { useTheme } from "../../contexts/ThemeContext";
 
 // Validation patterns
 const JAPANESE_REGEX = /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF]+$/;
@@ -42,6 +43,8 @@ export default function DictionaryCreate() {
   const [autoConvertKatakana, setAutoConvertKatakana] = useState(true);
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   useEffect(() => {
     document.title = "Dictionary Create | Yomu";
@@ -151,20 +154,24 @@ export default function DictionaryCreate() {
 
   const textFieldStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#fff",
-      "& fieldset": { borderColor: "#4A5568" },
-      "&:hover fieldset": { borderColor: "#64E9EE" },
-      "&.Mui-focused fieldset": { borderColor: "#64E9EE" },
+      color: isLightMode ? "#1f2937" : "#fff",
+      "& fieldset": { borderColor: isLightMode ? "#d1d5db" : "#4A5568" },
+      "&:hover fieldset": { borderColor: isLightMode ? "#2563eb" : "#64E9EE" },
+      "&.Mui-focused fieldset": { borderColor: isLightMode ? "#2563eb" : "#64E9EE" },
     },
-    "& .MuiInputLabel-root": { color: "#A0AEC0" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "#64E9EE" },
+    "& .MuiInputLabel-root": { color: isLightMode ? "#6b7280" : "#A0AEC0" },
+    "& .MuiInputLabel-root.Mui-focused": { color: isLightMode ? "#2563eb" : "#64E9EE" },
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 flex flex-col items-center p-4">
-      <div className="w-full max-w-2xl bg-gray-800 rounded-xl p-6 md:p-8 border border-[#64E9EE]/20 shadow-2xl">
+    <div className={`min-h-screen pt-20 flex flex-col items-center p-4 ${isLightMode ? 'bg-gray-50' : 'bg-gray-900'}`}>
+      <div className={`w-full max-w-2xl rounded-xl p-6 md:p-8 border shadow-2xl ${
+        isLightMode 
+          ? 'bg-white border-gray-200' 
+          : 'bg-gray-800 border-[#64E9EE]/20'
+      }`}>
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
+          <h1 className={`text-3xl font-bold drop-shadow-lg ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
             Buat Dictionary Baru
           </h1>
           <Button
@@ -172,11 +179,11 @@ export default function DictionaryCreate() {
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate("/dictionary")}
             sx={{
-              color: "#64E9EE",
-              borderColor: "#64E9EE",
+              color: isLightMode ? "#2563eb" : "#64E9EE",
+              borderColor: isLightMode ? "#2563eb" : "#64E9EE",
               "&:hover": {
-                borderColor: "#53cbd1",
-                backgroundColor: "#64E9EE10",
+                borderColor: isLightMode ? "#1d4ed8" : "#53cbd1",
+                backgroundColor: isLightMode ? "#dbeafe" : "#64E9EE10",
               },
             }}
           >
@@ -188,14 +195,14 @@ export default function DictionaryCreate() {
         <Box  sx={{
               p: 3,
               borderRadius: 2,
-              border: "1px solid #64E9EE20",
-              bgcolor: "rgba(100, 233, 238, 0.05)",
+              border: isLightMode ? "1px solid #e5e7eb" : "1px solid #64E9EE20",
+              bgcolor: isLightMode ? "#f8fafc" : "rgba(100, 233, 238, 0.05)",
               mb: 3,
             }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
             {/* Toggle untuk Hiragana */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Typography sx={{ color: "#A0AEC0" }}>Autofill Hiragana</Typography>
+              <Typography sx={{ color: isLightMode ? "#6b7280" : "#A0AEC0" }}>Autofill Hiragana</Typography>
               <Switch
               checked={autoConvertHiragana}
               onChange={() => setAutoConvertHiragana(!autoConvertHiragana)}
@@ -204,7 +211,7 @@ export default function DictionaryCreate() {
             </Box>
             {/* Toggle untuk Katakana */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Typography sx={{ color: "#A0AEC0" }}>Autofill Katakana</Typography>
+              <Typography sx={{ color: isLightMode ? "#6b7280" : "#A0AEC0" }}>Autofill Katakana</Typography>
               <Switch
               checked={autoConvertKatakana}
               onChange={() => setAutoConvertKatakana(!autoConvertKatakana)}
@@ -232,11 +239,11 @@ export default function DictionaryCreate() {
             sx={{
               p: 3,
               borderRadius: 2,
-              border: "1px solid #64E9EE20",
-              bgcolor: "rgba(100, 233, 238, 0.05)",
+              border: isLightMode ? "1px solid #e5e7eb" : "1px solid #64E9EE20",
+              bgcolor: isLightMode ? "#f8fafc" : "rgba(100, 233, 238, 0.05)",
             }}
           >
-            <Typography variant="h6" sx={{ color: "#64E9EE", mb: 2 }}>
+            <Typography variant="h6" sx={{ color: isLightMode ? "#2563eb" : "#64E9EE", mb: 2 }}>
               Karakter Jepang
             </Typography>
 
@@ -273,7 +280,7 @@ export default function DictionaryCreate() {
                 sx={textFieldStyles}
               />
             </div>
-            <Typography variant="body2" sx={{ color: "#A0AEC0", mt: 2 }}>
+            <Typography variant="body2" sx={{ color: isLightMode ? "#6b7280" : "#A0AEC0", mt: 2 }}>
               <b>Info:</b> Karena kanji tergantung konteks, bisa copy paste saja
               dari sumber lain
               <br />
@@ -282,7 +289,7 @@ export default function DictionaryCreate() {
               href="https://jisho.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline"
+              className={`hover:underline ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}
             >
               https://jisho.org/
             </a>
@@ -293,11 +300,11 @@ export default function DictionaryCreate() {
             sx={{
               p: 3,
               borderRadius: 2,
-              border: "1px solid #64E9EE20",
-              bgcolor: "rgba(100, 233, 238, 0.05)",
+              border: isLightMode ? "1px solid #e5e7eb" : "1px solid #64E9EE20",
+              bgcolor: isLightMode ? "#f8fafc" : "rgba(100, 233, 238, 0.05)",
             }}
           >
-            <Typography variant="h6" sx={{ color: "#64E9EE", mb: 2 }}>
+            <Typography variant="h6" sx={{ color: isLightMode ? "#2563eb" : "#64E9EE", mb: 2 }}>
               Terjemahan & Kategori
             </Typography>
 
@@ -331,7 +338,7 @@ export default function DictionaryCreate() {
                     <option
                       key={option}
                       value={option}
-                      style={{ background: "#2D3748" }}
+                      style={{ background: isLightMode ? "#ffffff" : "#2D3748" }}
                     >
                       {option}
                     </option>
@@ -353,14 +360,14 @@ export default function DictionaryCreate() {
           sx={{
             mt: 4,
             py: 1.5,
-            backgroundColor: "#64E9EE",
+            backgroundColor: isLightMode ? "#2563eb" : "#64E9EE",
             "&:hover": {
-              backgroundColor: "#53cbd1",
-              boxShadow: "0 0 15px rgba(100, 233, 238, 0.3)",
+              backgroundColor: isLightMode ? "#1d4ed8" : "#53cbd1",
+              boxShadow: isLightMode ? "0 0 15px rgba(37, 99, 235, 0.3)" : "0 0 15px rgba(100, 233, 238, 0.3)",
             },
             "&.Mui-disabled": {
-              backgroundColor: "#64E9EE50",
-              color: "#ffffff80",
+              backgroundColor: isLightMode ? "#9ca3af" : "#64E9EE50",
+              color: isLightMode ? "#ffffff" : "#ffffff80",
             },
           }}
         >

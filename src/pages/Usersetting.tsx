@@ -7,11 +7,13 @@ import NoteService from "../services/NoteService";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import ThemeSwitchComponent from "../components/ThemeSwitch";
-import ThemeDebugComponent from "../components/ThemeDebugComponent";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Usersetting() {
   const [user] = useAuthState(auth);
   const [, setUserData] = useState<unknown>(null);
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   const deleteAllDictionaries = async () => {
     try {
@@ -49,7 +51,7 @@ export default function Usersetting() {
   }, [user]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-8 mt-8" style={{ color: "var(--color-text-primary)" }}>
+    <div className={`flex items-center justify-center min-h-screen px-4 py-8 mt-8 ${isLightMode ? 'text-gray-800 bg-gray-50' : 'text-[#97C8EB] bg-gray-900'}`}>
       <div className="flex flex-col md:flex-row w-full max-w-4xl gap-10">
         {/* Kiri: Foto dan Nama */}
         <div className="md:w-1/3 flex flex-col items-center text-center">
@@ -57,49 +59,43 @@ export default function Usersetting() {
             <img
               src={user.photoURL}
               alt="User Profile"
-              className="w-32 h-32 rounded-full object-cover mb-4 border-4"
-              style={{ borderColor: "var(--color-primary)" }}
+              className={`w-32 h-32 rounded-full object-cover mb-4 border-4 ${isLightMode ? 'border-blue-600' : 'border-[#64E9EE]'}`}
             />
           ) : (
-            <div 
-              className="w-32 h-32 rounded-full mb-4 border-4" 
-              style={{ 
-                backgroundColor: "var(--color-bg-secondary)", 
-                borderColor: "var(--color-primary)" 
-              }} 
+            <div
+              className={`w-32 h-32 rounded-full mb-4 border-4 ${isLightMode ? 'bg-gray-100 border-blue-600' : 'bg-[#093A3E] border-[#64E9EE]'}`}
             />
           )}
-          <h2 className="text-2xl font-semibold" style={{ color: "var(--color-primary)" }}>
+          <h2 className={`text-2xl font-semibold ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
             {user?.displayName || "Unknown User"}
           </h2>
-          <p style={{ color: "var(--color-text-secondary)" }}>{user?.email || "No email"}</p>
+          <p className={`${isLightMode ? 'text-gray-600' : 'text-[#97C8EB]'}`}>{user?.email || "No email"}</p>
 
-          <p className="text-xs mt-2 break-all" style={{ color: "var(--color-text-secondary)" }}>
+          <p className={`text-xs mt-2 break-all ${isLightMode ? 'text-gray-500' : 'text-[#97C8EB]'}`}>
             UID: {user?.uid || "No UID"}
           </p>
         </div>
 
         {/* Kanan: Dua container */}
         <div className="md:w-2/3 flex flex-col gap-6">
-          <div className="p-6 rounded-2xl border" style={{ borderColor: "var(--color-border)" }}>
-            <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--color-primary)" }}>
+          <div className={`p-6 rounded-2xl border shadow ${isLightMode ? 'border-gray-200 bg-white' : 'border-[#64E9EE]/20 bg-gray-800'}`}>
+            <h3 className={`text-xl font-semibold mb-2 ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
               Preferences
             </h3>
-            <p className="text-gray-400">
+            <p className={`${isLightMode ? 'text-gray-600' : 'text-gray-400'}`}>
               Manage your preferences, theme, and notifications.
             </p>
             {/* Theme Switch */}
             <div className="mt-4">
               <ThemeSwitchComponent />
-              <ThemeDebugComponent />
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border border-red-700 bg-red-900/30">
-            <h3 className="text-xl font-semibold mb-2 text-red-400 flex items-center gap-2">
+          <div className={`p-6 rounded-2xl border border-red-700 ${isLightMode ? 'bg-red-50' : 'bg-red-900/30'}`}>
+            <h3 className={`text-xl font-semibold mb-2 flex items-center gap-2 ${isLightMode ? 'text-red-600' : 'text-red-400'}`}>
               Danger Zone
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className={`mb-4 ${isLightMode ? 'text-gray-600' : 'text-gray-400'}`}>
               Perform critical actions such as data deletion and account
               sign-out.
             </p>
@@ -114,8 +110,8 @@ export default function Usersetting() {
                     text: "Aksi ini tidak dapat dibatalkan kalau sudah dilakukan.",
                     icon: "warning",
                     showCancelButton: true,
-                    background: "#0f172a",
-                    color: "#fff",
+                    background: isLightMode ? "#ffffff" : "#0f172a",
+                    color: isLightMode ? "#1e293b" : "#fff",
                     confirmButtonText: "Ya, Hapus Semua",
                     cancelButtonText: "Batal",
                   });
@@ -135,8 +131,8 @@ export default function Usersetting() {
                     text: "Aksi ini tidak dapat dibatalkan kalau sudah dilakukan.",
                     icon: "warning",
                     showCancelButton: true,
-                    background: "#0f172a",
-                    color: "#fff",
+                    background: isLightMode ? "#ffffff" : "#0f172a",
+                    color: isLightMode ? "#1e293b" : "#fff",
                     confirmButtonText: "Ya, Hapus Semua",
                     cancelButtonText: "Batal",
                   });
@@ -151,7 +147,7 @@ export default function Usersetting() {
 
             {/* Logout */}
             <div className="border-t border-red-700 pt-4">
-              <p className="text-sm text-red-300 mb-2">Account Management</p>
+              <p className={`text-sm mb-2 ${isLightMode ? 'text-red-600' : 'text-red-300'}`}>Account Management</p>
               <button
                 className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition flex items-center justify-center gap-2"
                 onClick={async () => {
@@ -160,8 +156,8 @@ export default function Usersetting() {
                     text: "Kamu akan keluar dari akun ini.",
                     icon: "warning",
                     showCancelButton: true,
-                    background: "#0f172a",
-                    color: "#fff",
+                    background: isLightMode ? "#ffffff" : "#0f172a",
+                    color: isLightMode ? "#1e293b" : "#fff",
                     confirmButtonText: "Ya, Keluar",
                     cancelButtonText: "Batal",
                   });
