@@ -27,7 +27,7 @@ export default function HomeNavbar() {
                 alt="profile"
                 className="w-8 h-8 rounded-full object-cover border border-white/30"
               />
-              <span className="text-sm font-semibold text-white truncate max-w-[120px]">
+              <span className="text-sm font-semibold text-blue-500 truncate max-w-[120px]">
                 {user.displayName ?? "User"}
               </span>
             </div>
