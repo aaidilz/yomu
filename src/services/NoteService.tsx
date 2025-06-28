@@ -7,6 +7,7 @@ import {
   deleteDoc,
   doc,
   Timestamp,
+  writeBatch,
 } from "firebase/firestore";
 
 interface Note {
@@ -62,6 +63,16 @@ class NoteService {
 
     const noteRef = doc(ref, id);
     return deleteDoc(noteRef);
+  }
+
+  async deleteAllNotes() {
+    const ref = this.getUserNotesRef();
+    const batch = writeBatch(db);
+    const snapshot = await getDocs(ref);
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    return batch.commit();
   }
 }
 

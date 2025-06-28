@@ -13,6 +13,7 @@ import Stack from "@mui/material/Stack";
 import Swal from "sweetalert2";
 
 import DictionaryItem from "./components/DictionaryItem";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface Dictionary {
   id: string;
@@ -35,7 +36,9 @@ const Dictionary: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-  
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
+
   useEffect(() => {
     document.title = "Dictionary | Yomu";
   }, []);
@@ -72,8 +75,8 @@ const Dictionary: React.FC = () => {
       text: "Data yang dihapus tidak dapat dikembalikan.",
       icon: "warning",
       showCancelButton: true,
-      background: "#0f172a",
-      color: "#fff",
+      background: isLightMode ? "#ffffff" : "#0f172a",
+      color: isLightMode ? "#1e293b" : "#fff",
       confirmButtonText: "Hapus",
       cancelButtonText: "Batal",
     });
@@ -87,8 +90,8 @@ const Dictionary: React.FC = () => {
           title: "Berhasil!",
           text: "Data berhasil dihapus.",
           icon: "success",
-          background: "#0f172a",
-          color: "#fff",
+          background: isLightMode ? "#ffffff" : "#0f172a",
+          color: isLightMode ? "#1e293b" : "#fff",
         });
       } catch (err) {
         console.error("Gagal hapus data", err);
@@ -96,13 +99,13 @@ const Dictionary: React.FC = () => {
           title: "Gagal!",
           text: "Terjadi kesalahan saat menghapus.",
           icon: "error",
-          background: "#0f172a",
-          color: "#fff",
+          background: isLightMode ? "#ffffff" : "#0f172a",
+          color: isLightMode ? "#1e293b" : "#fff",
         });
       }
       setDeletingId(null);
     }
-  }, []);
+  }, [isLightMode]);
 
   const categories = useMemo(() => {
     const unique = new Set(dictionaries.map((f) => f.kategori));
@@ -140,27 +143,35 @@ const Dictionary: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (loading) return <p className="text-center py-4">Loading...</p>;
+  if (loading) return <p className={`text-center py-4 ${isLightMode ? 'text-gray-600' : 'text-[#97C8EB]'}`}>Loading...</p>;
 
   return (
-    <div className="pt-20 flex justify-center items-center flex-col px-4">
+    <div className={`pt-20 flex justify-center items-center flex-col px-4 ${isLightMode ? 'text-gray-800 bg-gray-50' : 'text-[#97C8EB] bg-gray-900  '}`}> 
       {/* Header Section */}
       <div className="w-full max-w-6xl mb-8">
         <div className="flex justify-between items-center w-full mb-8">
-          <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
+          <h1 className={`text-3xl font-bold drop-shadow-lg ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
             Dictionary
           </h1>
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate("/dictionary/new")}
-              className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-black px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+              className={`flex items-center px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg ${
+                isLightMode 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-[#64E9EE] hover:bg-[#53cbd1] text-black'
+              }`}
             >
               <AddIcon className="mr-2 transform translate-y-[-1px]" />
               Tambah
             </button>
             <button
               onClick={() => navigate("/dictionary/setting")}
-              className="p-2 rounded-xl hover:bg-[#64E9EE]/20 text-[#64E9EE] transition-all transform hover:scale-110"
+              className={`p-2 rounded-xl transition-all transform hover:scale-110 ${
+                isLightMode 
+                  ? 'hover:bg-blue-100 text-blue-600' 
+                  : 'hover:bg-[#64E9EE]/20 text-[#64E9EE]'
+              }`}
             >
               <SettingsIcon fontSize="medium" />
             </button>
@@ -168,7 +179,7 @@ const Dictionary: React.FC = () => {
         </div>
 
         {/* Search & Filter Section */}
-        <div className="w-full bg-gray-800 backdrop-blur-sm p-4 rounded-2xl shadow-xl">
+        <div className={`w-full backdrop-blur-sm p-4 rounded-2xl shadow-xl ${isLightMode ? 'bg-white border border-gray-200' : 'bg-gray-800'}`}>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -180,9 +191,13 @@ const Dictionary: React.FC = () => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 placeholder-gray-400 transition-all"
+                className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${
+                  isLightMode
+                    ? 'border-gray-300 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-50 text-gray-900 placeholder-gray-500'
+                    : 'border-gray-700 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 placeholder-gray-400'
+                }`}
               />
-              <SearchIcon className="h-6 w-6 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <SearchIcon className={`h-6 w-6 absolute left-4 top-1/2 -translate-y-1/2 ${isLightMode ? 'text-gray-500' : 'text-gray-400'}`} />
             </div>
 
             {/* Category Filter */}
@@ -193,15 +208,19 @@ const Dictionary: React.FC = () => {
                   setSelectedCategory(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-6 pr-10 py-3 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 appearance-none transition-all"
+                className={`w-full pl-6 pr-10 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 appearance-none transition-all ${
+                  isLightMode
+                    ? 'border-gray-300 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-50 text-gray-900'
+                    : 'border-gray-700 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100'
+                }`}
               >
                 {categories.map((cat) => (
-                  <option key={cat} value={cat} className="bg-gray-800">
+                  <option key={cat} value={cat} className={isLightMode ? "bg-white" : "bg-gray-800"}>
                     {cat}
                   </option>
                 ))}
               </select>
-              <FilterListIcon className="h-5 w-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <FilterListIcon className={`h-5 w-5 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none ${isLightMode ? 'text-gray-500' : 'text-gray-400'}`} />
             </div>
           </div>
         </div>
@@ -219,13 +238,13 @@ const Dictionary: React.FC = () => {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="h-48 bg-gray-200 rounded-xl animate-pulse"
+                className={`h-48 rounded-xl animate-pulse ${isLightMode ? 'bg-gray-200' : 'bg-gray-700'}`}
               ></div>
             ))}
           </motion.div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">Data tidak ada ditemukan :(</p>
+            <p className={`text-lg ${isLightMode ? 'text-gray-500' : 'text-gray-500'}`}>Data tidak ada ditemukan :(</p>
           </div>
         ) : (
           <>
@@ -253,8 +272,8 @@ const Dictionary: React.FC = () => {
                   variant="outlined"
                   sx={{
                     "& .MuiPaginationItem-root": {
-                      color: "#64E9EE",
-                      borderColor: "#64E9EE",
+                      color: isLightMode ? "#2563eb" : "#64E9EE",
+                      borderColor: isLightMode ? "#2563eb" : "#64E9EE",
                     },
                   }}
                 />

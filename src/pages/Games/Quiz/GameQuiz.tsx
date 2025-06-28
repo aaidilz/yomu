@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DictionaryService from "../../../services/DictionaryService";
 import { ArrowBack, ArrowForward, Shuffle } from "@mui/icons-material";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 interface Dictionary {
   id: string;
@@ -19,6 +20,8 @@ interface QuizQuestion {
 }
 
 const GameQuiz: React.FC = () => {
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === 'light';
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [feedback, setFeedback] = useState<React.ReactNode>("");
@@ -81,7 +84,7 @@ const GameQuiz: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-bold text-green-400"
+          className={`font-bold ${isLightMode ? 'text-green-600' : 'text-green-400'}`}
         >
           Benar!
         </motion.div>
@@ -91,7 +94,7 @@ const GameQuiz: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-red-400"
+          className={isLightMode ? 'text-red-600' : 'text-red-400'}
         >
           <p className="font-bold">Salah!</p>
           <p className="text-sm mt-2">Jawaban benar: {currentQuestion.arti}</p>
@@ -101,14 +104,14 @@ const GameQuiz: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center pt-20 text-[#64E9EE]">
+    <div className={`min-h-screen flex items-center justify-center pt-20 ${isLightMode ? 'bg-gray-50 text-gray-900' : 'bg-gray-900 text-[#64E9EE]'}`}>
       <div className="max-w-2xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center mb-8"
         >
-          <h1 className="text-3xl font-bold text-center neon-text">
+          <h1 className={`text-3xl font-bold text-center ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE] neon-text'}`}>
             Quiz (Pilihan Ganda)
           </h1>
 
@@ -116,8 +119,12 @@ const GameQuiz: React.FC = () => {
             onClick={handleShuffleToggle}
             className={`mt-4 px-6 py-3 rounded-xl flex items-center gap-2 transition-all ${
               isRandom
-                ? "bg-[#13AAFB] text-white"
-                : "border-2 border-[#64E9EE] text-[#64E9EE] hover:bg-[#64E9EE]/10"
+                ? isLightMode 
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-[#13AAFB] text-white"
+                : isLightMode
+                  ? "border-2 border-blue-500 text-blue-500 hover:bg-blue-50"
+                  : "border-2 border-[#64E9EE] text-[#64E9EE] hover:bg-[#64E9EE]/10"
             }`}
           >
             <Shuffle className="text-xl" />
@@ -126,7 +133,7 @@ const GameQuiz: React.FC = () => {
             </span>
           </button>
 
-          <div className="text-center mt-4 text-[#97C8EB]/50 text-sm">
+          <div className={`text-center mt-4 text-sm ${isLightMode ? 'text-gray-500' : 'text-[#97C8EB]/50'}`}>
             {isRandom ? "Random mode activated" : "Sequential mode"}
           </div>
         </motion.div>
@@ -139,11 +146,19 @@ const GameQuiz: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
-              className="bg-gray-800 rounded-xl p-6 shadow-2xl border-2 border-[#64E9EE]/30"
+              className={`rounded-xl p-6 shadow-2xl border-2 ${
+                isLightMode 
+                  ? 'bg-white border-blue-200' 
+                  : 'bg-gray-800 border-[#64E9EE]/30'
+              }`}
             >
               {!isRandom && (
                 <div className="text-center mb-4">
-                  <span className="bg-[#093A3E] text-[#64E9EE] px-4 py-2 rounded-full text-sm">
+                  <span className={`px-4 py-2 rounded-full text-sm ${
+                    isLightMode 
+                      ? 'bg-blue-100 text-blue-600' 
+                      : 'bg-[#093A3E] text-[#64E9EE]'
+                  }`}>
                     {currentIndex + 1} / {quizQuestions.length}
                   </span>
                 </div>
@@ -157,7 +172,9 @@ const GameQuiz: React.FC = () => {
                     ];
                   return (
                     value && (
-                      <p key={field} className="text-6xl font-bold text-center">
+                      <p key={field} className={`text-6xl font-bold text-center ${
+                        isLightMode ? 'text-gray-800' : 'text-white'
+                      }`}>
                         <span className="ml-2">{value || "なし"}</span>
                       </p>
                     )
@@ -171,9 +188,11 @@ const GameQuiz: React.FC = () => {
                     key={index}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full p-3 border-2 border-[#97C8EB] rounded-lg 
-              hover:bg-gray-700 transition-all duration-200
-              active:scale-95 font-medium"
+                    className={`w-full p-3 border-2 rounded-lg transition-all duration-200 active:scale-95 font-medium ${
+                      isLightMode 
+                        ? 'border-blue-300 text-gray-700 hover:bg-blue-50' 
+                        : 'border-[#97C8EB] text-white hover:bg-gray-700'
+                    }`}
                     onClick={() => handleChoice(choice)}
                   >
                     {choice}
@@ -192,7 +211,7 @@ const GameQuiz: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="grid grid-cols-1 gap-8 text-center"
           >
-            <div className="text-xl text-gray-500 mt-4">gak ada datanya :(</div>
+            <div className={`text-xl mt-4 ${isLightMode ? 'text-gray-500' : 'text-gray-500'}`}>gak ada datanya :(</div>
           </motion.div>
         ) : (
           <motion.div
@@ -200,7 +219,7 @@ const GameQuiz: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="grid grid-cols-1 gap-8"
           >
-            <div className="h-48 bg-gray-200 rounded-xl animate-pulse"></div>
+            <div className={`h-48 rounded-xl animate-pulse ${isLightMode ? 'bg-gray-200' : 'bg-gray-700'}`}></div>
           </motion.div>
         )}
 
@@ -216,7 +235,11 @@ const GameQuiz: React.FC = () => {
                 <button
                   onClick={handlePrevious}
                   disabled={currentIndex === 0}
-                  className="p-3 text-[#97C8EB] hover:text-[#64E9EE] disabled:opacity-30 transition-all"
+                  className={`p-3 transition-all disabled:opacity-30 ${
+                    isLightMode 
+                      ? 'text-gray-600 hover:text-blue-600' 
+                      : 'text-[#97C8EB] hover:text-[#64E9EE]'
+                  }`}
                 >
                   <ArrowBack className="text-3xl" />
                 </button>
@@ -224,7 +247,11 @@ const GameQuiz: React.FC = () => {
                 <button
                   onClick={handleNext}
                   disabled={currentIndex >= quizQuestions.length - 1}
-                  className="p-3 text-[#97C8EB] hover:text-[#64E9EE] disabled:opacity-30 transition-all"
+                  className={`p-3 transition-all disabled:opacity-30 ${
+                    isLightMode 
+                      ? 'text-gray-600 hover:text-blue-600' 
+                      : 'text-[#97C8EB] hover:text-[#64E9EE]'
+                  }`}
                 >
                   <ArrowForward className="text-3xl" />
                 </button>
@@ -235,9 +262,11 @@ const GameQuiz: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-[#64E9EE] bg-opacity-20 rounded-lg
-            hover:bg-opacity-30 transition-all duration-200
-            border-2 border-[#64E9EE] font-bold text-black"
+                className={`px-6 py-3 rounded-lg transition-all duration-200 border-2 font-bold ${
+                  isLightMode 
+                    ? 'bg-blue-100 hover:bg-blue-200 border-blue-500 text-blue-700' 
+                    : 'bg-[#64E9EE] bg-opacity-20 hover:bg-opacity-30 border-[#64E9EE] text-black'
+                }`}
                 onClick={handleNext}
               >
                 Next Question

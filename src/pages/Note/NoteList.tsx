@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Pagination, Stack } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface Note {
   id: string;
@@ -22,6 +23,8 @@ const NoteList: React.FC = () => {
   const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   const navigate = useNavigate();
 
@@ -46,8 +49,8 @@ const NoteList: React.FC = () => {
       text: "Catatan yang dihapus tidak dapat dikembalikan.",
       icon: "warning",
       showCancelButton: true,
-      background: "#0f172a",
-      color: "#fff",
+      background: isLightMode ? "#ffffff" : "#0f172a",
+      color: isLightMode ? "#1e293b" : "#fff",
       confirmButtonText: "Hapus",
       cancelButtonText: "Batal",
     });
@@ -61,8 +64,8 @@ const NoteList: React.FC = () => {
           title: "Berhasil!",
           text: "Catatan berhasil dihapus.",
           icon: "success",
-          background: "#0f172a",
-          color: "#fff",
+          background: isLightMode ? "#ffffff" : "#0f172a",
+          color: isLightMode ? "#1e293b" : "#fff",
         });
       } catch (err) {
         console.error("Gagal hapus catatan", err);
@@ -70,8 +73,8 @@ const NoteList: React.FC = () => {
           title: "Gagal!",
           text: "Terjadi kesalahan saat menghapus.",
           icon: "error",
-          background: "#0f172a",
-          color: "#fff",
+          background: isLightMode ? "#ffffff" : "#0f172a",
+          color: isLightMode ? "#1e293b" : "#fff",
         });
       }
       setDeletingId(null);
@@ -117,17 +120,25 @@ const NoteList: React.FC = () => {
   };
 
   return (
-    <div className="pt-20 flex justify-center items-center flex-col px-4">
+    <div className={`pt-20 flex justify-center items-center flex-col px-4 ${
+      isLightMode ? 'bg-gray-50 text-gray-800' : 'bg-gray-900 text-[#97C8EB]'
+    }`}>
       {/* Header */}
       <div className="w-full max-w-6xl mb-8">
         <div className="flex justify-between items-center w-full mb-8">
-          <h1 className="text-3xl font-bold text-[#64E9EE] drop-shadow-lg">
+          <h1 className={`text-3xl font-bold drop-shadow-lg ${
+            isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'
+          }`}>
             Note
           </h1>
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate("/note/new")}
-              className="flex items-center bg-[#64E9EE] hover:bg-[#53cbd1] text-black px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+              className={`flex items-center px-4 py-2 rounded-xl transition-all transform hover:scale-105 shadow-lg ${
+                isLightMode
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  : 'bg-[#64E9EE] hover:bg-[#53cbd1] text-black'
+              }`}
             >
               <AddIcon className="mr-2 transform translate-y-[-1px]" />
               Tambah
@@ -136,7 +147,9 @@ const NoteList: React.FC = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="w-full bg-gray-800 backdrop-blur-sm p-4 rounded-2xl shadow-xl mb-8">
+        <div className={`w-full backdrop-blur-sm p-4 rounded-2xl shadow-xl mb-8 ${
+          isLightMode ? 'bg-white border border-gray-200' : 'bg-gray-800'
+        }`}>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -148,9 +161,15 @@ const NoteList: React.FC = () => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-700 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 placeholder-gray-400 transition-all"
+                className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 transition-all ${
+                  isLightMode
+                    ? 'border-gray-300 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-50 text-gray-900 placeholder-gray-500'
+                    : 'border-gray-700 focus:border-blue-400 focus:ring-blue-400/20 bg-gray-900/50 text-gray-100 placeholder-gray-400'
+                }`}
               />
-              <Search className="h-6 w-6 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search className={`h-6 w-6 absolute left-4 top-1/2 -translate-y-1/2 ${
+                isLightMode ? 'text-gray-500' : 'text-gray-400'
+              }`} />
             </div>
           </div>
         </div>
@@ -167,13 +186,15 @@ const NoteList: React.FC = () => {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-48 bg-gray-200 rounded-xl animate-pulse"
+                  className={`h-48 rounded-xl animate-pulse ${
+                    isLightMode ? 'bg-gray-200' : 'bg-gray-700'
+                  }`}
                 ></div>
               ))}
             </motion.div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">
+              <p className={`text-lg ${isLightMode ? 'text-gray-500' : 'text-gray-500'}`}>
                 Data tidak ada ditemukan :(
               </p>
             </div>
@@ -206,8 +227,8 @@ const NoteList: React.FC = () => {
                     variant="outlined"
                     sx={{
                       "& .MuiPaginationItem-root": {
-                        color: "#64E9EE",
-                        borderColor: "#64E9EE",
+                        color: isLightMode ? "#2563eb" : "#64E9EE",
+                        borderColor: isLightMode ? "#2563eb" : "#64E9EE",
                       },
                     }}
                   />

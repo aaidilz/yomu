@@ -8,6 +8,7 @@ import AssistantIcon from "@mui/icons-material/Assistant";
 import MDEditor from "@uiw/react-md-editor";
 import handleDictionaryIfAny from "./util/handleDictionaryIfAny";
 import handleNoteIfAny from "./util/handleNoteIfAny";
+import { useTheme } from "../contexts/ThemeContext";
 
 const apiKey = import.meta.env.VITE_AI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
@@ -32,6 +33,8 @@ const ChatLLM = ({
   isChatLoading,
   setChatLoading,
 }: ChatLLMProps) => {
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === 'light';
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -91,7 +94,7 @@ const ChatLLM = ({
       const prompt = buildPrompt(updatedHistory);
 
       const result = await ai.models.generateContent({
-        model: "gemma-3-27b-it",
+        model: "gemma-3n-e4b-it",
         contents: prompt,
       });
 
@@ -154,9 +157,9 @@ const ChatLLM = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-800">
+    <div className={`flex flex-col h-full ${isLightMode ? 'bg-gray-100' : 'bg-gray-800'}`}>
       {/* Header */}
-      <div className="flex items-center justify-between bg-gray-900 text-white p-3">
+      <div className={`flex items-center justify-between ${isLightMode ? 'bg-white border-b border-gray-200 text-gray-800' : 'bg-gray-900 text-white'} p-3`}>
         <div className="flex items-center">
           <AssistantIcon className="mr-2" />
           <span className="font-bold">AI Assistant</span>
@@ -166,7 +169,7 @@ const ChatLLM = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={clearChat}
-            className="p-1 rounded-full hover:bg-gray-500 transition-colors"
+            className={`p-1 rounded-full transition-colors ${isLightMode ? 'hover:bg-gray-200' : 'hover:bg-gray-500'}`}
             title="Clear chat"
           >
             <DeleteIcon fontSize="small" />
@@ -175,7 +178,7 @@ const ChatLLM = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-gray-500 transition-colors"
+            className={`p-1 rounded-full transition-colors ${isLightMode ? 'hover:bg-gray-200' : 'hover:bg-gray-500'}`}
           >
             <CloseIcon fontSize="small" />
           </motion.button>
@@ -185,8 +188,8 @@ const ChatLLM = ({
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {chatHistory.length === 0 && !isChatLoading && (
-          <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
-            <AssistantIcon className="text-4xl mb-3 text-gray-400" />
+          <div className={`flex flex-col items-center justify-center h-full text-center ${isLightMode ? 'text-gray-500' : 'text-gray-500'}`}>
+            <AssistantIcon className={`text-4xl mb-3 ${isLightMode ? 'text-gray-400' : 'text-gray-400'}`} />
             <h3 className="font-bold text-lg mb-1">Yuki Chan</h3>
             <p className="max-w-xs">Yuki bisa bantu kamu belajar!</p>
           </div>
@@ -215,14 +218,16 @@ const ChatLLM = ({
                 className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
                   msg.role === "user"
                     ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none"
-                    : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
+                    : isLightMode
+                    ? "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
+                    : "bg-gray-700 text-white border border-gray-600 rounded-bl-none"
                 } shadow-sm`}
               >
                 <MDEditor.Markdown
                   source={msg.text}
                   style={{
                     backgroundColor: "transparent",
-                    color: msg.role === "user" ? "white" : "inherit",
+                    color: msg.role === "user" ? "white" : isLightMode ? "inherit" : "white",
                   }}
                 />
               </div>
@@ -231,11 +236,11 @@ const ChatLLM = ({
 
         {isChatLoading && (
           <div className="flex justify-start">
-            <div className="bg-white text-gray-800 px-4 py-3 rounded-2xl rounded-bl-none border border-gray-200">
+            <div className={`px-4 py-3 rounded-2xl rounded-bl-none ${isLightMode ? 'bg-white text-gray-800 border border-gray-200' : 'bg-gray-700 text-white border border-gray-600'}`}>
               <div className="flex space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></div>
+                <div className={`w-2 h-2 rounded-full animate-pulse ${isLightMode ? 'bg-gray-400' : 'bg-gray-300'}`}></div>
+                <div className={`w-2 h-2 rounded-full animate-pulse delay-150 ${isLightMode ? 'bg-gray-400' : 'bg-gray-300'}`}></div>
+                <div className={`w-2 h-2 rounded-full animate-pulse delay-300 ${isLightMode ? 'bg-gray-400' : 'bg-gray-300'}`}></div>
               </div>
             </div>
           </div>
@@ -244,11 +249,11 @@ const ChatLLM = ({
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-gray-900 bg-gray-900">
+      <div className={`p-3 border-t ${isLightMode ? 'border-gray-200 bg-white' : 'border-gray-900 bg-gray-900'}`}>
         <div className="flex items-center gap-2">
           <input
             type="text"
-            className="flex-1 border border-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            className={`flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isLightMode ? 'border-gray-300 bg-white text-gray-800 placeholder-gray-500' : 'border-gray-800 bg-gray-800 text-white placeholder-gray-400'}`}
             placeholder="Tanyakan Yuki sesuatu..."
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
@@ -265,7 +270,7 @@ const ChatLLM = ({
             <SendIcon />
           </motion.button>
         </div>
-        <p className="text-xs text-gray-100 mt-1">Tekan Enter buat ngirim.</p>
+        <p className={`text-xs mt-1 ${isLightMode ? 'text-gray-600' : 'text-gray-100'}`}>Tekan Enter buat ngirim.</p>
       </div>
     </div>
   );

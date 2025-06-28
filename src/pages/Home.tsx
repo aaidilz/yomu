@@ -4,11 +4,14 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import DictionaryService from "../services/DictionaryService";
 import NoteService from "../services/NoteService";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Home() {
   const [user] = useAuthState(auth);
   const [flashcardCount, setFlashcardCount] = useState(0);
   const [noteCount, setNoteCount] = useState(0);
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
   
   useEffect(() => {
     document.title = "Home | Yomu";
@@ -39,7 +42,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-[#97C8EB] relative">
+    <div className={`min-h-screen flex items-center justify-center relative ${isLightMode ? 'text-gray-800 bg-gray-50' : 'text-[#97C8EB] bg-gray-900'}`}>
       <div className="max-w-4xl w-full mx-auto px-4 pt-20 pb-8">
         {/* Welcome Section */}
         <motion.div
@@ -48,17 +51,17 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="text-center space-y-6 mb-16"
         >
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-[#64E9EE] to-[#13AAFB] bg-clip-text text-transparent">
+          <h1 className={`text-5xl font-bold bg-gradient-to-r bg-clip-text text-transparent ${isLightMode ? 'from-blue-600 to-blue-400' : 'from-[#64E9EE] to-[#13AAFB]'}`}>
             ようこそ
           </h1>
 
           <div className="flex items-center justify-center space-x-4">
-            <div className="h-1 w-16 bg-[#64E9EE]/50" />
-            <p className="text-2xl font-medium text-white">{getGreeting()}</p>
-            <div className="h-1 w-16 bg-[#64E9EE]/50" />
+            <div className={`h-1 w-16 ${isLightMode ? 'bg-blue-400/50' : 'bg-[#64E9EE]/50'}`} />
+            <p className={`text-2xl font-medium ${isLightMode ? 'text-gray-800' : 'text-white'}`}>{getGreeting()}</p>
+            <div className={`h-1 w-16 ${isLightMode ? 'bg-blue-400/50' : 'bg-[#64E9EE]/50'}`} />
           </div>
 
-          <p className="text-3xl font-light text-[#64E9EE]">
+          <p className={`text-3xl font-light ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
             {user?.displayName || user?.email}
           </p>
         </motion.div>
@@ -73,12 +76,16 @@ export default function Home() {
               key={index}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="bg-gray-800 rounded-xl p-6 border border-[#64E9EE]/20 hover:border-[#64E9EE]/40 transition-colors"
+              className={`rounded-xl p-6 border transition-colors ${
+                isLightMode 
+                  ? 'bg-white border-blue-200 hover:border-blue-400' 
+                  : 'bg-gray-800 border-[#64E9EE]/20 hover:border-[#64E9EE]/40'
+              }`}
             >
-              <h3 className="text-[#13AAFB] text-lg font-semibold mb-2">
+              <h3 className={`text-lg font-semibold mb-2 ${isLightMode ? 'text-blue-600' : 'text-[#13AAFB]'}`}>
                 {stat.title}
               </h3>
-              <p className="text-3xl font-bold text-[#64E9EE]">{stat.value}</p>
+              <p className={`text-3xl font-bold ${isLightMode ? 'text-blue-700' : 'text-[#64E9EE]'}`}>{stat.value}</p>
             </motion.div>
           ))}
         </div>

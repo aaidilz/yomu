@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowBack, ArrowForward, Shuffle } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import DictionaryService from "../../../services/DictionaryService";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 const GameFlashcard = () => {
   interface Dictionary {
@@ -17,6 +18,8 @@ const GameFlashcard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRandom, setIsRandom] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   useEffect(() => {
     document.title = "Flashcard | Yomu";
@@ -79,25 +82,33 @@ const GameFlashcard = () => {
 
   if (cards.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center ${
+        isLightMode ? 'bg-gray-50' : 'bg-gray-900'
+      }`}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-[#97C8EB] text-lg"
+          className={isLightMode ? 'text-gray-600 text-lg' : 'text-[#97C8EB] text-lg'}
         >
-          <div className="text-xl text-gray-500 mt-4">gak ada datanya :(</div>
+          <div className={`text-xl mt-4 ${isLightMode ? 'text-gray-500' : 'text-gray-500'}`}>gak ada datanya :(</div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 mt-5">
+    <div className={`min-h-screen flex items-center justify-center p-4 mt-5 ${
+      isLightMode ? 'bg-gray-50' : 'bg-gray-900'
+    }`}>
       <div className="w-full max-w-2xl">
         {/* Card Counter */}
         <div className="text-center mb-6">
-          <span className="bg-[#093A3E] text-[#64E9EE] px-4 py-2 rounded-full text-sm">
+          <span className={`px-4 py-2 rounded-full text-sm ${
+            isLightMode 
+              ? 'bg-blue-100 text-blue-600' 
+              : 'bg-[#093A3E] text-[#64E9EE]'
+          }`}>
             {currentIndex + 1} / {cards.length}
           </span>
         </div>
@@ -120,23 +131,39 @@ const GameFlashcard = () => {
             style={{ transformStyle: "preserve-3d" }}
           >
             {/* Front Side */}
-            <div className="absolute w-full h-full flex flex-col items-center justify-center bg-gray-800 rounded-xl p-6 border-2 border-[#64E9EE]/30 backface-hidden shadow-2xl">
-              <div className="text-[#64E9EE] text-5xl font-japanese mb-2">
+            <div className={`absolute w-full h-full flex flex-col items-center justify-center rounded-xl p-6 border-2 backface-hidden shadow-2xl ${
+              isLightMode 
+                ? 'bg-white border-blue-300' 
+                : 'bg-gray-800 border-[#64E9EE]/30'
+            }`}>
+              <div className={`text-5xl font-japanese mb-2 ${
+                isLightMode ? 'font-medium' : 'text-[#64E9EE]'
+              }`}>
                 {cards[currentIndex].kanji || cards[currentIndex].hiragana}
               </div>
               {cards[currentIndex].hiragana && (
-                <div className="text-[#97C8EB] text-lg">
+                <div className={`text-lg ${
+                  isLightMode ? 'font-medium' : 'text-[#97C8EB]'
+                }`}>
                   {cards[currentIndex].hiragana}
                 </div>
               )}
-              <div className="absolute bottom-4 text-[#97C8EB]/50 text-sm">
+              <div className={`absolute bottom-4 text-sm ${
+                isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/50'
+              }`}>
                 Tap to flip
               </div>
             </div>
 
             {/* Back Side */}
-            <div className="absolute w-full h-full flex items-center justify-center bg-gray-800 rounded-xl p-6 border-2 border-[#64E9EE]/30 backface-hidden transform rotate-y-180 shadow-2xl">
-              <div className="text-[#64E9EE] text-3xl text-center">
+            <div className={`absolute w-full h-full flex items-center justify-center rounded-xl p-6 border-2 backface-hidden transform rotate-y-180 shadow-2xl ${
+              isLightMode 
+                ? 'bg-white border-blue-300' 
+                : 'bg-gray-800 border-[#64E9EE]/30'
+            }`}>
+              <div className={`text-3xl text-center ${
+                isLightMode ? 'text-normal' : 'text-[#64E9EE]'
+              }`}>
                 {cards[currentIndex].arti}
               </div>
             </div>
@@ -148,7 +175,11 @@ const GameFlashcard = () => {
           <button
             onClick={handlePrevious}
             disabled={currentIndex === 0}
-            className="p-3 text-[#97C8EB] hover:text-[#64E9EE] disabled:opacity-30 transition-all"
+            className={`p-3 disabled:opacity-30 transition-all ${
+              isLightMode 
+                ? 'text-blue-500 hover:text-blue-700' 
+                : 'text-[#97C8EB] hover:text-[#64E9EE]'
+            }`}
           >
             <ArrowBack className="text-3xl" />
           </button>
@@ -157,8 +188,12 @@ const GameFlashcard = () => {
             onClick={handleShuffleToggle}
             className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-all ${
               isRandom
-                ? "bg-[#13AAFB] text-white"
-                : "border-2 border-[#64E9EE] text-[#64E9EE] hover:bg-[#64E9EE]/10"
+                ? (isLightMode 
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-[#13AAFB] text-white")
+                : (isLightMode
+                    ? "border-2 border-blue-500 text-blue-600 hover:bg-blue-50"
+                    : "border-2 border-[#64E9EE] text-[#64E9EE] hover:bg-[#64E9EE]/10")
             }`}
           >
             <Shuffle />
@@ -168,14 +203,20 @@ const GameFlashcard = () => {
           <button
             onClick={handleNext}
             disabled={currentIndex >= cards.length - 1 && !isRandom}
-            className="p-3 text-[#97C8EB] hover:text-[#64E9EE] disabled:opacity-30 transition-all"
+            className={`p-3 disabled:opacity-30 transition-all ${
+              isLightMode 
+                ? 'text-blue-500 hover:text-blue-700' 
+                : 'text-[#97C8EB] hover:text-[#64E9EE]'
+            }`}
           >
             <ArrowForward className="text-3xl" />
           </button>
         </div>
 
         {/* Indicator */}
-        <div className="text-center mt-4 text-[#97C8EB]/50 text-sm">
+        <div className={`text-center mt-4 text-sm ${
+          isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/50'
+        }`}>
           {isRandom ? "Random mode activated" : "Sequential mode"}
         </div>
       </div>
