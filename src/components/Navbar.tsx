@@ -4,7 +4,6 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
-  Transition,
 } from "@headlessui/react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -55,39 +54,33 @@ export default function Navbars() {
                 <MenuButton className={`px-3 py-2 rounded-md ${isLightMode ? 'hover:bg-gray-100 hover:text-blue-600' : 'hover:bg-[#093A3E] hover:text-[#64E9EE]'}`}>
                   Games <ExpandMoreIcon />
                 </MenuButton>
-                <Transition
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform scale-95 opacity-0"
-                  enterTo="transform scale-100 opacity-1"
-                  leave="transition duration-75 ease-out"
-                  leaveFrom="transform scale-100 opacity-1"
-                  leaveTo="transform scale-95 opacity-0"
+                <MenuItems
+                  transition
+                  className={`absolute left-0 mt-2 w-48 ${isLightMode ? 'bg-white border border-gray-200' : 'bg-[#093A3E]'} rounded-md shadow-lg py-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0`}
                 >
-                  <MenuItems className={`absolute left-0 mt-2 w-48 ${isLightMode ? 'bg-white border border-gray-200' : 'bg-[#093A3E]'} rounded-md shadow-lg py-1`}>
-                    <MenuItem>
-                      {({ active }) => (
-                        <Link
-                          to="/games-flashcard"
-                          className={`block px-4 py-2 ${active ? (isLightMode ? 'bg-gray-100 text-blue-600' : 'bg-[#001011] text-[#64E9EE]') : ''
-                            }`}
-                        >
-                          FlashCard Flip
-                        </Link>
-                      )}
-                    </MenuItem>
-                    <MenuItem>
-                      {({ active }) => (
-                        <Link
-                          to="/games-quiz"
-                          className={`block px-4 py-2 ${active ? (isLightMode ? 'bg-gray-100 text-blue-600' : 'bg-[#001011] text-[#64E9EE]') : ''
-                            }`}
-                        >
-                          Quiz
-                        </Link>
-                      )}
-                    </MenuItem>
-                  </MenuItems>
-                </Transition>
+                  <MenuItem>
+                    {({ active }) => (
+                      <Link
+                        to="/games-flashcard"
+                        className={`block px-4 py-2 ${active ? (isLightMode ? 'bg-gray-100 text-blue-600' : 'bg-[#001011] text-[#64E9EE]') : ''
+                          }`}
+                      >
+                        FlashCard Flip
+                      </Link>
+                    )}
+                  </MenuItem>
+                  <MenuItem>
+                    {({ active }) => (
+                      <Link
+                        to="/games-quiz"
+                        className={`block px-4 py-2 ${active ? (isLightMode ? 'bg-gray-100 text-blue-600' : 'bg-[#001011] text-[#64E9EE]') : ''
+                          }`}
+                      >
+                        Quiz
+                      </Link>
+                    )}
+                  </MenuItem>
+                </MenuItems>
               </Menu>
             </div>
           </div>
@@ -117,14 +110,10 @@ export default function Navbars() {
                   {user?.displayName || user?.email}
                 </span>
               </MenuButton>
-              <Transition
-                enter="transition duration-100 ease-out"
-                enterFrom="transform scale-95 opacity-0"
-                enterTo="transform scale-100 opacity-1"
-                leave="transition duration-75 ease-out"
-                leaveFrom="transform scale-100 opacity-1"
-                leaveTo="transform scale-95 opacity-0"
-              >                  <MenuItems className={`absolute right-0 mt-2 w-48 ${isLightMode ? 'bg-white border border-gray-200' : 'bg-[#093A3E]'} rounded-md shadow-lg py-1`}>
+              <MenuItems
+                transition
+                className={`absolute right-0 mt-2 w-48 ${isLightMode ? 'bg-white border border-gray-200' : 'bg-[#093A3E]'} rounded-md shadow-lg py-1 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0`}
+              >
                   <MenuItem>
                     {({ active }) => (
                       <Link
@@ -166,7 +155,6 @@ export default function Navbars() {
                     )}
                   </MenuItem>
                 </MenuItems>
-              </Transition>
             </Menu>
 
             {/* Mobile menu button */}

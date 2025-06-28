@@ -63,7 +63,7 @@ export default function ThemeSwitchComponent() {
     
     try {
       await setThemeMode(newTheme);
-      console.log(`Theme successfully changed to: ${newTheme}`);
+      // console.log(`Theme successfully changed to: ${newTheme}`);
       
       // Show success notification
       toast.success(`Theme changed to ${newTheme} mode!`, {

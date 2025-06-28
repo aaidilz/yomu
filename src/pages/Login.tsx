@@ -4,6 +4,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import AuthService from "../services/AuthService";
 import Swal from "sweetalert2";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,22 +12,24 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState(""); // State untuk menyimpan pesan error
   const [loading, setLoading] = useState(false); // State untuk loading status
   const navigate = useNavigate();
+  const { themeMode } = useTheme();
+  const isLightMode = themeMode === "light";
 
   useEffect(() => {
     document.title = "Login | Yomu";
   }, []);
 
   useEffect(() => {
-  if (errorMessage) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: errorMessage,
-      background: '#0f172a',
-      color: '#fff',
-    });
-  }
-}, [errorMessage]);
+    if (errorMessage) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errorMessage,
+        background: "#0f172a",
+        color: "#fff",
+      });
+    }
+  }, [errorMessage]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,23 +61,23 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  relative">
+    <div className="min-h-screen flex items-center justify-center relative">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-[#1A202C]"></div>
+      <div className={`absolute inset-0 ${isLightMode ? 'bg-gray-100' : 'bg-[#1A202C]'}`}></div>
 
       {/* Card Container */}
-      <div className="relative bg-[#0f172a] p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-white mb-6">
+      <div className={`relative p-8 rounded-2xl shadow-lg w-full max-w-md ${isLightMode ? 'bg-white' : 'bg-[#0f172a]'}`}>
+        <h2 className={`text-2xl font-bold text-center mb-6 ${isLightMode ? 'text-gray-800' : 'text-white'}`}>
           Login
         </h2>
 
         {/* Login Form */}
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
-            <label className="block text-white font-medium">Email</label>
+            <label className={`block font-medium ${isLightMode ? 'text-gray-800' : 'text-white'}`}>Email</label>
             <input
               type="email"
-              className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              className={`w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${isLightMode ? 'bg-gray-100 text-gray-800 border-gray-300 placeholder-gray-400' : 'bg-gray-800 text-white border-gray-600 placeholder-gray-500'}`}
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -83,10 +86,10 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-white font-medium">Password</label>
+            <label className={`block font-medium ${isLightMode ? 'text-gray-800' : 'text-white'}`}>Password</label>
             <input
               type="password"
-              className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              className={`w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${isLightMode ? 'bg-gray-100 text-gray-800 border-gray-300 placeholder-gray-400' : 'bg-gray-800 text-white border-gray-600 placeholder-gray-500'}`}
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -97,7 +100,7 @@ export default function Login() {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+            className={`w-full py-2 font-medium rounded-lg transition disabled:opacity-50 ${isLightMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -107,7 +110,7 @@ export default function Login() {
         {/* Google Login */}
         <div className="flex justify-center">
           <button
-            className="w-75 mt-4 py-2 flex items-center justify-center rounded-lg hover:bg-gray-100 transition disabled:opacity-50 text-blue-500"
+            className={`w-75 mt-4 py-2 flex items-center justify-center rounded-lg transition disabled:opacity-50 ${isLightMode ? 'hover:bg-gray-100 text-blue-500' : 'hover:bg-gray-700 text-blue-400'}`}
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -118,9 +121,9 @@ export default function Login() {
         {/* back button */}
         <button
           onClick={() => navigate("/")}
-          className="flex items-center mt-4 text-white"
+          className={`flex items-center mt-4 ${isLightMode ? 'text-gray-800' : 'text-white'}`}
         >
-          <ArrowBack className="text-white" style={{ fontSize: 30 }} /> Kembali
+          <ArrowBack className={isLightMode ? "text-gray-800" : "text-white"} style={{ fontSize: 30 }} /> Kembali
         </button>
       </div>
     </div>

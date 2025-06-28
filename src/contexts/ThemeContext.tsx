@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import UserPreferencesService from "../services/UserPreferenceService";
@@ -16,13 +16,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // Custom hook to use theme context
-export const useTheme = () => {
+export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
-};
+}
 
 // Define dark theme
 const darkTheme = createTheme({
@@ -90,7 +90,7 @@ interface CustomThemeProviderProps {
   children: ReactNode;
 }
 
-export const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({ children }) => {
+export function CustomThemeProvider({ children }: CustomThemeProviderProps) {
   const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
   const [user] = useAuthState(auth);
 
@@ -134,7 +134,7 @@ export const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({ childr
   }, [user]);
 
   const setThemeMode = async (mode: ThemeMode) => {
-    console.log(`Changing theme to: ${mode}`);
+    // console.log(`Changing theme to: ${mode}`);
     setThemeModeState(mode);
     
     // Update document theme attribute for CSS variables
@@ -146,9 +146,9 @@ export const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({ childr
     
     if (user) {
       try {
-        console.log(`Saving theme ${mode} to Firebase for user: ${user.uid}`);
+        // console.log(`Saving theme ${mode} to Firebase for user: ${user.uid}`);
         await UserPreferencesService.updateTheme(mode);
-        console.log(`Theme ${mode} successfully saved to Firebase`);
+        // console.log(`Theme ${mode} successfully saved to Firebase`);
       } catch (error) {
         console.error("Failed to save theme to Firebase:", error);
         throw error; // Re-throw to allow component to handle the error
@@ -157,7 +157,7 @@ export const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({ childr
       try {
         // Save to localStorage if no user
         localStorage.setItem("theme", mode);
-        console.log(`Theme ${mode} saved to localStorage`);
+        // console.log(`Theme ${mode} saved to localStorage`);
       } catch (error) {
         console.error("Failed to save theme to localStorage:", error);
         throw error;
@@ -180,4 +180,4 @@ export const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({ childr
       </ThemeProvider>
     </ThemeContext.Provider>
   );
-};
+}

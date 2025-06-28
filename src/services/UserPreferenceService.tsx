@@ -65,7 +65,7 @@ return doc(db, "users", uid, "user_preferences", "settings");
       throw new Error("No user is currently logged in");
     }
 
-    console.log(`Updating theme to ${theme} for user: ${currentUser.uid}`);
+    // console.log(`Updating theme to ${theme} for user: ${currentUser.uid}`);
 
     try {
       const preferencesDocRef = this.getPreferencesDocRef(currentUser.uid);
@@ -73,7 +73,7 @@ return doc(db, "users", uid, "user_preferences", "settings");
         theme,
         updatedAt: new Date(),
       });
-      console.log(`Theme ${theme} successfully updated in Firebase`);
+      // console.log(`Theme ${theme} successfully updated in Firebase`);
     } catch (error) {
       console.error("Error updating theme in Firebase:", error);
       throw error;
