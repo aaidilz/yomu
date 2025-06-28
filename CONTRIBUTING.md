@@ -85,8 +85,3 @@ Dengan berkontribusi, Anda menyetujui bahwa kontribusi Anda akan dirilis di bawa
 ---
 
 Terima kasih telah membantu membuat **Yomu** menjadi lebih baik!
-
-```
-
-Jika kamu ingin menambahkan bagian tertentu seperti *kontribusi terjemahan*, *setup lokal*, atau *daftar pekerjaan terbuka*, bisa ditambahkan sesuai kebutuhan proyekmu. Mau aku bantu lanjutkan ke situ?
-```
