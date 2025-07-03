@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowBack, ArrowForward, Shuffle } from "@mui/icons-material";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import DictionaryService from "../../../services/DictionaryService";
 import { useTheme } from "../../../contexts/ThemeContext";
 
@@ -18,8 +18,13 @@ const GameFlashcard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRandom, setIsRandom] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
+  const [isAnimating, setIsAnimating] = useState(false);
   const { themeMode } = useTheme();
   const isLightMode = themeMode === "light";
+
+  // Swipe threshold and animation variants
+  const swipeConfidenceThreshold = 10000;
 
   useEffect(() => {
     document.title = "Flashcard | Yomu";
@@ -55,21 +60,47 @@ const GameFlashcard = () => {
   };
 
   const handleNext = () => {
+    if (isAnimating) return;
+    setDirection(1);
+    navigateCard(1);
+  };
+
+  const handlePrevious = () => {
+    if (isAnimating) return;
+    setDirection(-1);
+    navigateCard(-1);
+  };
+
+  const navigateCard = (dir: number) => {
     if (isRandom) {
       setCurrentIndex(getRandomIndex(currentIndex));
-    } else if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+    } else {
+      if (dir === 1 && currentIndex < cards.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else if (dir === -1 && currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+      }
     }
     setIsFlipped(false);
   };
 
-  const handlePrevious = () => {
-    if (isRandom) {
-      setCurrentIndex(getRandomIndex(currentIndex));
-    } else if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+  // Swipe detection functions
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity;
+  };
+
+  const handleDragEnd = (_: any, { offset, velocity }: any) => {
+    const swipe = swipePower(offset.x, velocity.x);
+
+    if (swipe < -swipeConfidenceThreshold) {
+      // Swipe left - go to next card
+      setDirection(1);
+      navigateCard(1);
+    } else if (swipe > swipeConfidenceThreshold) {
+      // Swipe right - go to previous card
+      setDirection(-1);
+      navigateCard(-1);
     }
-    setIsFlipped(false);
   };
 
   const handleShuffleToggle = () => {
@@ -113,62 +144,99 @@ const GameFlashcard = () => {
           </span>
         </div>
 
-        {/* Dictionary */}
-        <div
-          className="relative w-full max-w-[400px] h-[300px] mx-auto perspective-1000"
-          onClick={handleFlip}
-        >
+        {/* Dictionary Card with Swipe */}
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            className="w-full h-full absolute"
-            initial={false}
-            animate={{ rotateY: isFlipped ? 180 : 0 }}
+            key={currentIndex}
+            custom={direction}
+            initial={{ 
+              x: direction > 0 ? 300 : -300, 
+              opacity: 0,
+              scale: 0.8
+            }}
+            animate={{ 
+              x: 0, 
+              opacity: 1,
+              scale: 1
+            }}
+            exit={{ 
+              x: direction > 0 ? -300 : 300, 
+              opacity: 0,
+              scale: 0.8
+            }}
             transition={{
-              duration: 0.6,
               type: "spring",
               stiffness: 300,
               damping: 30,
+              duration: 0.3
             }}
-            style={{ transformStyle: "preserve-3d" }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            onAnimationStart={() => setIsAnimating(true)}
+            onAnimationComplete={() => setIsAnimating(false)}
+            className="relative w-full max-w-[400px] h-[300px] mx-auto perspective-1000 cursor-pointer"
+            onClick={handleFlip}
+            whileDrag={{ scale: 1.05 }}
           >
-            {/* Front Side */}
-            <div className={`absolute w-full h-full flex flex-col items-center justify-center rounded-xl p-6 border-2 backface-hidden shadow-2xl ${
-              isLightMode 
-                ? 'bg-white border-blue-300' 
-                : 'bg-gray-800 border-[#64E9EE]/30'
-            }`}>
-              <div className={`text-5xl font-japanese mb-2 ${
-                isLightMode ? 'font-medium' : 'text-[#64E9EE]'
+            <motion.div
+              className="w-full h-full absolute"
+              initial={false}
+              animate={{ rotateY: isFlipped ? 180 : 0 }}
+              transition={{
+                duration: 0.6,
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* Front Side */}
+              <div className={`absolute w-full h-full flex flex-col items-center justify-center rounded-xl p-6 border-2 backface-hidden shadow-2xl ${
+                isLightMode 
+                  ? 'bg-white border-blue-300' 
+                  : 'bg-gray-800 border-[#64E9EE]/30'
               }`}>
-                {cards[currentIndex].kanji || cards[currentIndex].hiragana}
-              </div>
-              {cards[currentIndex].hiragana && (
-                <div className={`text-lg ${
-                  isLightMode ? 'font-medium' : 'text-[#97C8EB]'
+                <div className={`text-5xl font-japanese mb-2 ${
+                  isLightMode ? 'font-medium' : 'text-[#64E9EE]'
                 }`}>
-                  {cards[currentIndex].hiragana}
+                  {cards[currentIndex].kanji || cards[currentIndex].hiragana}
                 </div>
-              )}
-              <div className={`absolute bottom-4 text-sm ${
-                isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/50'
-              }`}>
-                Tap to flip
+                {cards[currentIndex].hiragana && (
+                  <div className={`text-lg ${
+                    isLightMode ? 'font-medium' : 'text-[#97C8EB]'
+                  }`}>
+                    {cards[currentIndex].hiragana}
+                  </div>
+                )}
+                <div className={`absolute bottom-4 text-xs ${
+                  isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/50'
+                }`}>
+                  Tap to flip • Swipe to navigate
+                </div>
               </div>
-            </div>
 
-            {/* Back Side */}
-            <div className={`absolute w-full h-full flex items-center justify-center rounded-xl p-6 border-2 backface-hidden transform rotate-y-180 shadow-2xl ${
-              isLightMode 
-                ? 'bg-white border-blue-300' 
-                : 'bg-gray-800 border-[#64E9EE]/30'
-            }`}>
-              <div className={`text-3xl text-center ${
-                isLightMode ? 'text-normal' : 'text-[#64E9EE]'
+              {/* Back Side */}
+              <div className={`absolute w-full h-full flex items-center justify-center rounded-xl p-6 border-2 backface-hidden transform rotate-y-180 shadow-2xl ${
+                isLightMode 
+                  ? 'bg-white border-blue-300' 
+                  : 'bg-gray-800 border-[#64E9EE]/30'
               }`}>
-                {cards[currentIndex].arti}
+                <div className={`text-3xl text-center ${
+                  isLightMode ? 'text-normal' : 'text-[#64E9EE]'
+                }`}>
+                  {cards[currentIndex].arti}
+                </div>
+                <div className={`absolute bottom-4 text-xs ${
+                  isLightMode ? 'text-gray-400' : 'text-[#97C8EB]/50'
+                }`}>
+                  Tap to flip • Swipe to navigate
+                </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </div>
+        </AnimatePresence>  
 
         {/* Controls */}
         <div className="mt-8 flex items-center justify-center gap-4">
