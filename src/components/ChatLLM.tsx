@@ -105,7 +105,7 @@ const ChatLLM = ({
       let newHistory = [...updatedHistory, modelMessage];
       setChatHistory(newHistory);
 
-      // Coba ekstrak JSON dari respons model
+      // ekstrak JSON dari respons model
       const jsonMatch = modelText.match(/\{[\s\S]*?\}/);
       let parsed;
       if (jsonMatch) {
