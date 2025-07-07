@@ -20,7 +20,7 @@ interface Dictionary {
   kategori: string;
 }
 
-const validCategories = ["Kata benda", "Kata sifat", "Slang", "Bisnis", "Umum"];
+const validCategories = ["Kata benda", "Kata kerja", "Kata sifat", "Slang", "Bisnis", "Umum"];
 
 class DictionaryService {
   private getUserDictionariesRef() {
