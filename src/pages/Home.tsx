@@ -2,6 +2,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../configs/firebase-config";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DictionaryService from "../services/DictionaryService";
 import NoteService from "../services/NoteService";
 import { useTheme } from "../contexts/ThemeContext";
@@ -69,24 +70,25 @@ export default function Home() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { title: "📝 Active Notes", value: noteCount },
-            { title: "📚 Active Cards", value: flashcardCount },
+            { title: "📝 Active Notes", value: noteCount, link: "/note" },
+            { title: "📚 Active Cards", value: flashcardCount, link: "/dictionary" },
           ].map((stat, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className={`rounded-xl p-6 border transition-colors ${
-                isLightMode 
-                  ? 'bg-white border-blue-200 hover:border-blue-400' 
-                  : 'bg-gray-800 border-[#64E9EE]/20 hover:border-[#64E9EE]/40'
-              }`}
-            >
-              <h3 className={`text-lg font-semibold mb-2 ${isLightMode ? 'text-blue-600' : 'text-[#13AAFB]'}`}>
-                {stat.title}
-              </h3>
-              <p className={`text-3xl font-bold ${isLightMode ? 'text-blue-700' : 'text-[#64E9EE]'}`}>{stat.value}</p>
-            </motion.div>
+            <Link key={index} to={stat.link} className="block">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className={`rounded-xl p-6 border transition-colors cursor-pointer ${
+                  isLightMode 
+                    ? 'bg-white border-blue-200 hover:border-blue-400' 
+                    : 'bg-gray-800 border-[#64E9EE]/20 hover:border-[#64E9EE]/40'
+                }`}
+              >
+                <h3 className={`text-lg font-semibold mb-2 ${isLightMode ? 'text-blue-600' : 'text-[#13AAFB]'}`}>
+                  {stat.title}
+                </h3>
+                <p className={`text-3xl font-bold ${isLightMode ? 'text-blue-700' : 'text-[#64E9EE]'}`}>{stat.value}</p>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>
