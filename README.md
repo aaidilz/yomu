@@ -68,6 +68,6 @@ Proyek ini dilisensikan di bawah [MIT License](./LICENSE).
 
 ---
 
-## 🙌 Terima Kasih
+## 🙌 Terima Kasih Semuanya!
 
 Terima kasih yang berkontribusi ke repositori ini! Semoga bermanfaat dan menyenangkan untuk dipelajari. 🎌✨
