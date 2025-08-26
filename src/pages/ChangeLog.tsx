@@ -5,6 +5,33 @@ import { useEffect, useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import { ExpandMore, ExpandLess, FolderOpen, Folder, Description } from "@mui/icons-material";
 
+
+interface VersionItem {
+  version: string;
+  date: string;
+  tag: string;
+  description: string;
+}
+
+interface MinorGroup {
+  title: string;
+  description: string;
+  versions: VersionItem[];
+}
+
+interface MajorGroup {
+  title: string;
+  description: string;
+  isExpanded: boolean;
+  versions: {
+    [minor: string]: MinorGroup;
+  };
+}
+
+interface ChangelogData {
+  [major: string]: MajorGroup;
+}
+
 const ChangeLog = () => {
   const { themeMode } = useTheme();
   const isLightMode = themeMode === "light";
@@ -15,7 +42,7 @@ const ChangeLog = () => {
   }, []);
 
   // Hierarchical changelog structure organized by major versions
-  const changelogData = {
+  const changelogData: ChangelogData = {
     "1.x.x": {
       title: "Version 1.x.x",
       description: "Main release series",
@@ -26,10 +53,16 @@ const ChangeLog = () => {
           description: "Theme management and UI improvements",
           versions: [
             {
+              version: "1.2.1",
+              date: "26 Juli 2025",
+              tag: "Current",
+              description: "- Optimize: **Logic update** pada ChatLLM \n- Optimize: **Pengantian** Theme switcher menjadi Compact"
+            },
+            {
               version: "1.2.0",
               date: "28 Juni 2025",
-              tag: "Current",
-              description: "- **Feature** Menambahkan fitur pengganti tema (theme switch) agar pengguna dapat beralih antara mode terang dan gelap.",
+              tag: "",
+              description: "- Feature: **Menambahkan** fitur pengganti tema (theme switch) agar pengguna dapat beralih antara mode terang dan gelap.",
             }
           ]
         },
@@ -52,7 +85,7 @@ const ChangeLog = () => {
           ]
         },
         "1.0.x": {
-          title: "1.0.x - Foundation",
+          title: "1.0.x - Based",
           description: "Core features and initial release",
           versions: [
             {
@@ -80,11 +113,11 @@ const ChangeLog = () => {
   };
 
   // Function to find current version
-  const getCurrentVersion = () => {
+  const getCurrentVersion = (): VersionItem | null => {
     for (const [, majorVersion] of Object.entries(changelogData)) {
       for (const [, minorGroup] of Object.entries(majorVersion.versions)) {
         if (Array.isArray(minorGroup.versions)) {
-          const currentVersion = minorGroup.versions.find((v: any) => v.tag === "Current");
+          const currentVersion = minorGroup.versions.find((v) => v.tag === "Current");
           if (currentVersion) return currentVersion;
         }
       }
@@ -106,10 +139,10 @@ const ChangeLog = () => {
     });
   };
 
-  const renderVersionGroup = (groupKey: string, group: any, level: number = 0) => {
+  const renderVersionGroup = (groupKey: string, group: MajorGroup | MinorGroup, level: number = 0) => {
     const isExpanded = expandedVersions.has(groupKey);
-    const hasSubVersions = group.versions && typeof group.versions === 'object';
-    const hasDirectVersions = Array.isArray(group.versions);
+  const hasSubVersions = group.versions && typeof group.versions === 'object' && !Array.isArray(group.versions);
+  const hasDirectVersions = Array.isArray(group.versions);
 
     return (
       <div key={groupKey} className={`${level > 0 ? 'ml-6' : ''}`}>
@@ -153,13 +186,13 @@ const ChangeLog = () => {
         {isExpanded && (
           <div className={`ml-6 space-y-3 ${level === 0 ? 'mb-6' : 'mb-4'}`}>
             {hasSubVersions && !hasDirectVersions && 
-              Object.entries(group.versions).map(([subKey, subGroup]: [string, any]) =>
-                renderVersionGroup(`${groupKey}.${subKey}`, subGroup, level + 1)
+              Object.entries((group as MinorGroup | MajorGroup).versions).map(([subKey, subGroup]) =>
+                renderVersionGroup(`${groupKey}.${subKey}`, subGroup as MinorGroup, level + 1)
               )
             }
             
             {hasDirectVersions &&
-              group.versions.map((version: any) => (
+              (group.versions as VersionItem[]).map((version) => (
                 <div
                   key={version.version}
                   className={`p-4 rounded-lg border-l-4 ${
@@ -248,7 +281,7 @@ const ChangeLog = () => {
 
           {/* Hierarchical Changelog Structure */}
           <div className="space-y-6">
-            {Object.entries(changelogData).map(([key, majorVersion]: [string, any]) =>
+            {Object.entries(changelogData).map(([key, majorVersion]) =>
               renderVersionGroup(key, majorVersion, 0)
             )}
           </div>
