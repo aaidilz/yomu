@@ -27,7 +27,8 @@ const GamesFlashcard = lazy(
   () => import("./pages/Games/Flashcard/GameFlashcard")
 );
 
-const GamesQuiz = lazy(() => import("./pages/Games/Quiz/GameQuiz"));
+const GamesQuiz = lazy(() => import("./pages/Games/Quiz/GameQuizDashboard"));
+
 
 // note
 const NoteList = lazy(() => import("./pages/Note/NoteList"));
