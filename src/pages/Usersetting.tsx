@@ -55,17 +55,22 @@ export default function Usersetting() {
       <div className="flex flex-col md:flex-row w-full max-w-4xl gap-10">
         {/* Kiri: Foto dan Nama */}
         <div className="md:w-1/3 flex flex-col items-center text-center">
-          {user?.photoURL ? (
+            {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt="User Profile"
               className={`w-32 h-32 rounded-full object-cover mb-4 border-4 ${isLightMode ? 'border-blue-600' : 'border-[#64E9EE]'}`}
+              onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = "/public/default-avatar.png";
+              }}
             />
-          ) : (
-            <div
-              className={`w-32 h-32 rounded-full mb-4 border-4 ${isLightMode ? 'bg-gray-100 border-blue-600' : 'bg-[#093A3E] border-[#64E9EE]'}`}
+            ) : (
+            <img
+              src="/public/default-avatar.png"
+              alt="Default Avatar"
+              className={`w-32 h-32 rounded-full object-cover mb-4 border-4 ${isLightMode ? 'border-blue-600' : 'border-[#64E9EE]'}`}
             />
-          )}
+            )}
           <h2 className={`text-2xl font-semibold ${isLightMode ? 'text-blue-600' : 'text-[#64E9EE]'}`}>
             {user?.displayName || "Unknown User"}
           </h2>
@@ -86,7 +91,10 @@ export default function Usersetting() {
               Manage your preferences, theme, and notifications.
             </p>
             {/* Theme Switch */}
-            <div className="mt-4">
+            <div className="mt-4 flex items-center gap-4">
+              <span className="font-medium">
+              Theme:
+              </span>
               <ThemeSwitchComponent />
             </div>
           </div>
