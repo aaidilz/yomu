@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useCallback, useState } from "react";
 import { GoogleGenAI } from "@google/genai";
 import handleDictionaryIfAny from "./util/handleDictionaryIfAny";
@@ -6,11 +7,12 @@ import { useTheme } from "../contexts/ThemeContext";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
+import { ChatMessage } from "../components/types/chat";
 
 const apiKey = import.meta.env.VITE_AI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
 
-type ChatMessage = { role: "user" | "model" | "ai"; text: string };
+
 
 interface ChatLLMProps {
   onClose: () => void;
@@ -82,7 +84,7 @@ const ChatLLM = ({
       return [
         `System: ${systemPrompt}`,
         ...last10Messages.map(
-          (m) => `${m.role === "user" ? "User" : "AI"}: ${m.text}`
+          (m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.text}`
         ),
       ].join("\n\n");
     },
@@ -92,7 +94,7 @@ const ChatLLM = ({
   const handleSend = useCallback(async () => {
     if (!chatInput.trim() || isChatLoading) return;
 
-    const userMessage: ChatMessage = { role: "user", text: chatInput };
+  const userMessage: ChatMessage = { role: "user", text: chatInput };
     const updatedHistory = [...chatHistory, userMessage];
 
     setChatHistory(updatedHistory);
@@ -109,7 +111,7 @@ const ChatLLM = ({
 
       const modelText =
         result.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
-      const modelMessage: ChatMessage = { role: "ai", text: modelText };
+  const modelMessage: ChatMessage = { role: "assistant", text: modelText };
 
       let newHistory = [...updatedHistory, modelMessage];
       setChatHistory(newHistory);
@@ -145,7 +147,7 @@ const ChatLLM = ({
       console.error("API error:", err);
       setChatHistory([
         ...updatedHistory,
-        { role: "ai", text: "⚠️ Maaf, Yuki lagi error nih. Coba lagi ya?" },
+  { role: "assistant", text: "⚠️ Maaf, Yuki lagi error nih. Coba lagi ya?" },
       ]);
     } finally {
       setChatLoading(false);

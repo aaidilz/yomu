@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import MDEditor from "@uiw/react-md-editor";
-import { ChatMessage } from "../types/chat";
+import { ChatMessage } from "../components/types/chat";
 import { RefObject } from "react";
 
 interface ChatMessagesProps {

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { memo, ReactNode, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../configs/firebase-config";
 import Navbars from "./Navbar";
@@ -7,6 +7,7 @@ import LoopIcon from "@mui/icons-material/Loop";
 import { motion } from "framer-motion";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import ChatLLM from "../components/ChatLLM";
+import { ChatMessage } from "../components/types/chat";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -19,12 +20,29 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
   const [showChat, setShowChat] = useState(false);
 
   // State untuk menyimpan percakapan
-  type ChatMessage = { role: "user" | "model" | "ai"; text: string };
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setChatLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Migrasi chatHistory lama jika ada (role: 'ai'/'model' -> 'assistant')
+    const saved = localStorage.getItem("chatHistory");
+    if (saved) {
+      try {
+        const parsed: unknown = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const migrated = parsed.map((msg) => ({
+            ...msg,
+            role: msg.role === "ai" || msg.role === "model" ? "assistant" : msg.role,
+          }));
+          setChatHistory(migrated);
+        }
+      } catch (e) {
+        console.error("Failed to parse chatHistory:", e);
+      }
+    }
+
     const loadData = async () => {
       if (load) {
         await load();
@@ -96,6 +114,7 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
             setChatInput={setChatInput}
             isChatLoading={isChatLoading}
             setChatLoading={setChatLoading}
+            messagesEndRef={messagesEndRef}
           />
         </motion.div>
       </div>
@@ -114,7 +133,7 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
           className="fixed bottom-0 left-0 right-0 h-[85vh] bg-white shadow-2xl rounded-t-2xl z-50 overflow-hidden flex flex-col"
           initial={{ y: "100%" }}
           animate={{ y: showChat ? "0%" : "100%" }}
-          transition={{ type: "linear", duration: 0.3 }}
+          transition={{ type: "tween", duration: 0.3 }}
         >
           <ChatLLM
             onClose={() => setShowChat(false)}
@@ -125,6 +144,7 @@ const ProtectedRoute = ({ children, load }: ProtectedRouteProps) => {
             isChatLoading={isChatLoading}
             setChatLoading={setChatLoading}
             mobileUI={true}
+            messagesEndRef={messagesEndRef}
           />
         </motion.div>
       </div>

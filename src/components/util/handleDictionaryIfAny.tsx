@@ -1,7 +1,7 @@
+
+
+import { ChatMessage } from "../types/chat";
 import  DirectorySrvices from "../../services/DictionaryService";
-
-
-type ChatMessage = { role: "user" | "model" | "ai"; text: string };
 
 export const handleDictionaryIfAny = async (
   modelText: string,
@@ -17,7 +17,7 @@ export const handleDictionaryIfAny = async (
     await DirectorySrvices.addDictionary(parsedDict);
 
     const confirmationMessage: ChatMessage = {
-      role: "ai",
+      role: "assistant",
       text: "✅ Yuki udah tambahin data itu ke dictionary! Coba cek di halaman dictionary ya~",
     };
 
@@ -28,7 +28,7 @@ export const handleDictionaryIfAny = async (
   } catch (error) {
     console.error("Dictionary save error:", error);
     const errorMessage: ChatMessage = {
-      role: "ai",
+      role: "assistant",
       text: "❌ Gagal menyimpan dictionary. Coba cek format datanya ya!",
     };
 

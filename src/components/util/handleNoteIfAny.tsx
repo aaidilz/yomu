@@ -1,6 +1,6 @@
 
+import { ChatMessage } from "../types/chat";
 import NoteService from "../../services/NoteService";
-type ChatMessage = { role: "user" | "model" | "ai"; text: string };
 
 export interface NoteData {
   title: string;
@@ -32,7 +32,7 @@ export const handleNoteIfAny = async (
     await NoteService.addNote(noteData);
 
     const confirmationMessage: ChatMessage = {
-      role: "ai",
+      role: "assistant",
       text: "📝 Catatan berhasil disimpan! Yuk cek di halaman notes~",
     };
 
@@ -43,7 +43,7 @@ export const handleNoteIfAny = async (
   } catch (error) {
     console.error("Note save error:", error);
     const errorMessage: ChatMessage = {
-      role: "ai",
+      role: "assistant",
       text: "❌ Gagal menyimpan catatan. Pastikan formatnya benar ya: { title: '...', content: '...' }",
     };
 
